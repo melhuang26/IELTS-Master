@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Flash-Match | English Memory Game</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* CSS 3D Card Flip styles */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        /* Custom pulse keyframe for matched state */
+        @keyframes success-pop {
+            0% { transform: scale(1) rotateY(180deg); }
+            50% { transform: scale(1.08) rotateY(180deg); }
+            100% { transform: scale(1) rotateY(180deg); }
+        }
+        .matched-pop {
+            animation: success-pop 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navbar / Header -->
+    <header class="w-full bg-slate-800/80 backdrop-blur-md border-b border-slate-700/60 sticky top-0 z-20 px-4 py-3">
+        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">VocabMatch</h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Learn English vocabulary through memory pairs</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <!-- Sound Toggle Button -->
+                <button id="soundToggleBtn" class="p-2.5 rounded-lg bg-slate-700/70 hover:bg-slate-700 text-slate-300 hover:text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-500" title="Toggle Sound">
+                    <svg id="soundOnIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+                    </svg>
+                    <svg id="soundOffIcon" class="w-5 h-5 hidden text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+                    </svg>
+                </button>
+
+                <!-- Restart Button -->
+                <button id="restartBtn" class="flex items-center space-x-1.5 px-3 py-2 sm:px-4 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-all shadow-md shadow-blue-600/20 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    <span>Restart</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 flex flex-col justify-between">
+        
+        <!-- Dashboard / Game Stats -->
+        <div class="grid grid-cols-3 gap-3 sm:gap-6 mb-6">
+            <!-- Score Card -->
+            <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 sm:p-4 text-center backdrop-blur-sm">
+                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">Score</span>
+                <span id="scoreDisplay" class="text-xl sm:text-3xl font-extrabold text-blue-400">0</span>
+            </div>
+
+            <!-- Moves Card -->
+            <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 sm:p-4 text-center backdrop-blur-sm">
+                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">Moves</span>
+                <span id="movesDisplay" class="text-xl sm:text-3xl font-extrabold text-emerald-400">0</span>
+            </div>
+
+            <!-- Timer Card -->
+            <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 sm:p-4 text-center backdrop-blur-sm">
+                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">Time</span>
+                <span id="timerDisplay" class="text-xl sm:text-3xl font-extrabold text-amber-400">00:00</span>
+            </div>
+        </div>
+
+        <!-- Instruction Banner -->
+        <div class="mb-4 text-center">
+            <p class="text-sm text-slate-400">Match each <span class="text-blue-400 font-semibold">Vocabulary Word</span> with its corresponding <span class="text-indigo-400 font-semibold">Definition</span>!</p>
+        </div>
+
+        <!-- Card Grid container -->
+        <div class="flex-1 flex items-center justify-center min-h-[360px]">
+            <div id="gameGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 w-full">
+                <!-- Dynamic cards injected via JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-4 text-xs text-slate-500 border-t border-slate-800">
+        Vocabulary Memory Flash-Match &bull; Built with HTML, CSS & JavaScript
+    </footer>
+
+    <!-- Victory Modal -->
+    <div id="victoryModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+
+            <h2 class="text-2xl font-bold text-white mb-2">Great Job! 🎉</h2>
+            <p class="text-slate-300 text-sm mb-6">You successfully matched all vocabulary words!</p>
+
+            <!-- Results Summary -->
+            <div class="bg-slate-900/60 rounded-xl p-4 mb-6 grid grid-cols-3 gap-2 border border-slate-700/50">
+                <div>
+                    <span class="text-xs text-slate-400 block">Final Score</span>
+                    <span id="finalScore" class="text-lg font-bold text-blue-400">0</span>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 block">Total Moves</span>
+                    <span id="finalMoves" class="text-lg font-bold text-emerald-400">0</span>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-400 block">Time Taken</span>
+                    <span id="finalTime" class="text-lg font-bold text-amber-400">00:00</span>
+                </div>
+            </div>
+
+            <button id="modalPlayAgainBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold shadow-lg shadow-blue-500/25 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400">
+                Play Again
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Vocabulary dataset: Words and their matching definitions
+        const vocabPairs = [
+            { word: "Enthusiastic", def: "Very excited and showing intense interest" },
+            { word: "Abundant", def: "Existing or available in large quantities" },
+            { word: "Benevolent", def: "Kind, generous, and well-meaning" },
+            { word: "Candid", def: "Honest, direct, and straightforward" },
+            { word: "Diligent", def: "Hardworking, careful, and thorough" },
+            { word: "Resilient", def: "Able to recover quickly from difficulties" }
+        ];
+
+        // Sound FX Engine (Using Web Audio API)
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        this.ctx = new AudioContext();
+                    }
+                }
+            }
+
+            playFlip() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.08);
+
+                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.08);
+            }
+
+            playMatch() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                
+                // Play a pleasant 2-note arpeggio chord (C5 to G5)
+                [523.25, 783.99].forEach((freq, index) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + (index * 0.1));
+
+                    gain.gain.setValueAtTime(0.2, now + (index * 0.1));
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (index * 0.1) + 0.3);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(now + (index * 0.1));
+                    osc.stop(now + (index * 0.1) + 0.3);
+                });
+            }
+
+            playMismatch() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(120, now + 0.2);
+
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+
+            playVictory() {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+
+                const now = this.ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+
+                notes.forEach((freq, index) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + (index * 0.12));
+
+                    gain.gain.setValueAtTime(0.2, now + (index * 0.12));
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (index * 0.12) + 0.4);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(now + (index * 0.12));
+                    osc.stop(now + (index * 0.12) + 0.4);
+                });
+            }
+        }
+
+        // Game State Variables
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairsCount = 0;
+        let moves = 0;
+        let score = 0;
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let isBoardLocked = false;
+        let gameStarted = false;
+
+        const soundFX = new SoundFX();
+
+        // DOM Element Selectors
+        const gameGrid = document.getElementById('gameGrid');
+        const movesDisplay = document.getElementById('movesDisplay');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const restartBtn = document.getElementById('restartBtn');
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const soundOnIcon = document.getElementById('soundOnIcon');
+        const soundOffIcon = document.getElementById('soundOffIcon');
+        const victoryModal = document.getElementById('victoryModal');
+        const modalPlayAgainBtn = document.getElementById('modalPlayAgainBtn');
+
+        // Helper: Shuffle Array (Fisher-Yates)
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Prepare Cards Data Structure
+        function generateCardsData() {
+            let cardDeck = [];
+            vocabPairs.forEach((pair, pairIndex) => {
+                // Word Card
+                cardDeck.push({
+                    id: `pair-${pairIndex}-word`,
+                    pairId: pairIndex,
+                    type: 'word',
+                    text: pair.word
+                });
+                // Definition Card
+                cardDeck.push({
+                    id: `pair-${pairIndex}-def`,
+                    pairId: pairIndex,
+                    type: 'definition',
+                    text: pair.def
+                });
+            });
+            return shuffle(cardDeck);
+        }
+
+        // Render Game Grid DOM
+        function renderGrid() {
+            gameGrid.innerHTML = '';
+            cards.forEach((cardData, index) => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card perspective-1000 h-32 sm:h-36 cursor-pointer select-none';
+                cardEl.dataset.index = index;
+
+                const isWord = cardData.type === 'word';
+
+                cardEl.innerHTML = `
+                    <div class="card-inner relative w-full h-full transform-style-3d rounded-xl shadow-md transition-all duration-300">
+                        <!-- Card Front (Cover Face) -->
+                        <div class="card-front absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-700 border border-slate-600/60 rounded-xl flex flex-col items-center justify-center p-2 backface-hidden hover:border-blue-500/50 hover:shadow-blue-500/10 transition-colors">
+                            <div class="w-8 h-8 rounded-full bg-slate-700/80 flex items-center justify-center text-slate-400 font-bold text-sm">
+                                ?
+                            </div>
+                        </div>
+
+                        <!-- Card Back (Revealed Text Face) -->
+                        <div class="card-back absolute inset-0 bg-slate-800 border-2 ${isWord ? 'border-blue-500/80 bg-slate-800/90' : 'border-indigo-500/80 bg-slate-800/90'} rounded-xl p-3 flex flex-col items-center justify-center text-center backface-hidden rotate-y-180 overflow-y-auto">
+                            <span class="text-[10px] uppercase font-bold tracking-wider mb-1 ${isWord ? 'text-blue-400' : 'text-indigo-400'}">
+                                ${isWord ? 'Word' : 'Definition'}
+                            </span>
+                            <p class="${isWord ? 'text-sm sm:text-base font-bold text-white' : 'text-xs sm:text-sm text-slate-200 font-medium'} leading-snug">
+                                ${cardData.text}
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                cardEl.addEventListener('click', () => handleCardClick(index));
+                gameGrid.appendChild(cardEl);
+            });
+        }
+
+        // Start / Reset Timer
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerSeconds = 0;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const secs = (timerSeconds % 60).toString().padStart(2, '0');
+            timerDisplay.textContent = `${mins}:${secs}`;
+        }
+
+        // Card Click Handler
+        function handleCardClick(index) {
+            if (isBoardLocked) return;
+
+            const cardNode = gameGrid.children[index];
+            
+            // Prevent clicking already flipped or matched cards
+            if (cardNode.classList.contains('flipped') || cardNode.classList.contains('matched')) {
+                return;
+            }
+
+            // Start timer on first flip
+            if (!gameStarted) {
+                gameStarted = true;
+                startTimer();
+            }
+
+            // Flip current card
+            cardNode.classList.add('flipped');
+            soundFX.playFlip();
+            flippedCards.push({ index, data: cards[index], node: cardNode });
+
+            // Check match if 2 cards flipped
+            if (flippedCards.length === 2) {
+                moves++;
+                movesDisplay.textContent = moves;
+                checkMatch();
+            }
+        }
+
+        // Check if Flipped Pair Matches
+        function checkMatch() {
+            isBoardLocked = true;
+            const [first, second] = flippedCards;
+
+            const isMatch = first.data.pairId === second.data.pairId && first.data.type !== second.data.type;
+
+            if (isMatch) {
+                // Success Match logic
+                setTimeout(() => {
+                    soundFX.playMatch();
+                    
+                    first.node.classList.add('matched', 'matched-pop');
+                    second.node.classList.add('matched', 'matched-pop');
+
+                    // Highlight card borders as matched
+                    const inner1 = first.node.querySelector('.card-back');
+                    const inner2 = second.node.querySelector('.card-back');
+                    inner1.classList.remove('border-blue-500/80', 'border-indigo-500/80');
+                    inner2.classList.remove('border-blue-500/80', 'border-indigo-500/80');
+                    inner1.classList.add('border-emerald-500', 'bg-emerald-950/20');
+                    inner2.classList.add('border-emerald-500', 'bg-emerald-950/20');
+
+                    // Calculate score (Base 100 + Time bonus - Move penalty)
+                    score += Math.max(100 - (moves * 2), 50);
+                    scoreDisplay.textContent = score;
+
+                    matchedPairsCount++;
+                    flippedCards = [];
+                    isBoardLocked = false;
+
+                    // Check game finish state
+                    if (matchedPairsCount === vocabPairs.length) {
+                        handleVictory();
+                    }
+                }, 400);
+
+            } else {
+                // Mismatch logic
+                setTimeout(() => {
+                    soundFX.playMismatch();
+
+                    first.node.classList.remove('flipped');
+                    second.node.classList.remove('flipped');
+
+                    flippedCards = [];
+                    isBoardLocked = false;
+                }, 1100);
+            }
+        }
+
+        // Victory Event
+        function handleVictory() {
+            stopTimer();
+            soundFX.playVictory();
+
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalMoves').textContent = moves;
+            document.getElementById('finalTime').textContent = timerDisplay.textContent;
+
+            setTimeout(() => {
+                victoryModal.classList.remove('hidden');
+            }, 600);
+        }
+
+        // Reset Game Engine State
+        function initGame() {
+            stopTimer();
+            cards = generateCardsData();
+            flippedCards = [];
+            matchedPairsCount = 0;
+            moves = 0;
+            score = 0;
+            timerSeconds = 0;
+            gameStarted = false;
+            isBoardLocked = false;
+
+            movesDisplay.textContent = '0';
+            scoreDisplay.textContent = '0';
+            timerDisplay.textContent = '00:00';
+
+            victoryModal.classList.add('hidden');
+            renderGrid();
+        }
+
+        // Event Listeners
+        restartBtn.addEventListener('click', initGame);
+        modalPlayAgainBtn.addEventListener('click', initGame);
+
+        soundToggleBtn.addEventListener('click', () => {
+            soundFX.muted = !soundFX.muted;
+            if (soundFX.muted) {
+                soundOnIcon.classList.add('hidden');
+                soundOffIcon.classList.remove('hidden');
+            } else {
+                soundOnIcon.classList.remove('hidden');
+                soundOffIcon.classList.add('hidden');
+            }
+        });
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
