@@ -173,15 +173,41 @@
     <!-- JavaScript Logic -->
     <script>
         // Vocabulary dataset: Words and their matching definitions
-        const vocabPairs = [
-            { word: "Enthusiastic", def: "Very excited and showing intense interest" },
-            { word: "Abundant", def: "Existing or available in large quantities" },
-            { word: "Benevolent", def: "Kind, generous, and well-meaning" },
-            { word: "Candid", def: "Honest, direct, and straightforward" },
-            { word: "Diligent", def: "Hardworking, careful, and thorough" },
-            { word: "Resilient", def: "Able to recover quickly from difficulties" }
-        ];
-
+        const categories = {
+    ielts_verbs: {
+        name: "IELTS Academic Verbs & Adjectives",
+        pairs: [
+            { en: "Substantial", meaning: "Large in size, value, or importance" },
+            { en: "Mitigate", meaning: "To make something less harmful or severe" },
+            { en: "Plausible", meaning: "Seeming reasonable or likely to be true" },
+            { en: "Exacerbate", meaning: "To make a bad situation worse" },
+            { en: "Advocate", meaning: "To publicly support a cause or policy" },
+            { en: "Detrimental", meaning: "Causing harm or damage" }
+        ]
+    },
+    ielts_topics: {
+        name: "IELTS Topic Vocabulary",
+        pairs: [
+            { en: "Biodiversity", meaning: "Variety of plant and animal life" },
+            { en: "Urbanization", meaning: "Growth and development of cities" },
+            { en: "Globalization", meaning: "Worldwide integration of economies" },
+            { en: "Obsolete", meaning: "No longer produced or used; out of date" },
+            { en: "Sustainable", meaning: "Able to be maintained without depleting resources" },
+            { en: "Congestion", meaning: "State of being overcrowded, like heavy traffic" }
+        ]
+    },
+    ielts_idioms: {
+        name: "IELTS Advanced Expressions",
+        pairs: [
+            { en: "A double-edged sword", meaning: "Something that has both good and bad outcomes" },
+            { en: "Play a pivotal role", meaning: "To be extremely important or crucial" },
+            { en: "Pave the way for", meaning: "To make progress or future development easier" },
+            { en: "A pressing issue", meaning: "An urgent problem that needs immediate attention" },
+            { en: "Take for granted", meaning: "To fail to appreciate the true value of something" },
+            { en: "Bridging the gap", meaning: "Reducing the difference or distance between two groups" }
+        ]
+    }
+};
         // Sound FX Engine (Using Web Audio API)
         class SoundFX {
             constructor() {
