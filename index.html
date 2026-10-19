@@ -1,220 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Master - Flash-Match Pro</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            500: '#22c55e',
-                            600: '#16a34a',
-                            700: '#15803d',
-                            900: '#14532d',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .shake {
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-        }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
-        .pop-in {
-            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.96) translateY(12px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-    </style>
-</head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300 font-sans antialiased flex flex-col relative overflow-x-hidden pb-12">
 
-    <!-- Canvas overlay for SVG Lines -->
-    <svg id="svgOverlay" class="absolute inset-0 w-full h-full pointer-events-none z-10" style="min-height: 100vh;"></svg>
-
-    <!-- Navigation Header -->
-    <header class="w-full bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm sticky top-0 z-30">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-md">
-                    🇬🇧
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">IELTS Flash-Match Pro</h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Match Words to Definitions & Learn Context Below</p>
-                </div>
-            </div>
-
-            <!-- Controls bar -->
-            <div class="flex items-center gap-3 flex-wrap">
-                <!-- British Voice Selector -->
-                <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600">
-                    <span class="text-lg">🗣️</span>
-                    <select id="britishVoiceSelect" onchange="onVoiceChanged()" class="bg-transparent text-xs font-semibold focus:outline-none dark:text-slate-200 cursor-pointer">
-                        <option value="female" class="dark:bg-slate-800">🇬🇧 British Accent (Female)</option>
-                        <option value="male" class="dark:bg-slate-800">🇬🇧 British Accent (Male)</option>
-                    </select>
-                </div>
-
-                <!-- Dark Mode & Audio Controls -->
-                <button onclick="toggleAudio()" id="audioToggleBtn" title="Toggle Sound FX" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">
-                    🔊
-                </button>
-                <button onclick="toggleTheme()" title="Toggle Theme" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">
-                    🌙
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full flex flex-col gap-6 z-20">
-
-        <!-- Category & Restart Controls -->
-        <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-lg">📚</span>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Vocabulary Deck:</span>
-            </div>
-
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <select id="categorySelect" onchange="resetGame()" class="flex-1 sm:flex-none px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option value="ielts_verbs">IELTS Academic Verbs & Adjectives</option>
-                    <option value="ielts_topics">Environment, Tech & Society</option>
-                    <option value="ielts_idioms">Advanced Essay Expressions</option>
-                </select>
-                <button onclick="getHint()" class="px-3 py-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold hover:bg-amber-500/20 transition flex items-center gap-1">
-                    💡 Hint
-                </button>
-                <button onclick="resetGame()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition">
-                    Restart
-                </button>
-            </div>
-        </div>
-
-        <!-- Dashboard Stats Bar -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                <div class="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-bold">⏱️</div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold uppercase">Time</div>
-                    <div id="timerDisplay" class="text-lg font-bold">00:00</div>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                <div class="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 font-bold">🎯</div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold uppercase">Matches</div>
-                    <div class="text-lg font-bold"><span id="matchCount">0</span> / 6</div>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                <div class="p-2.5 rounded-lg bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 font-bold">🔥</div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold uppercase">Streak</div>
-                    <div id="streakCount" class="text-lg font-bold">0x</div>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                <div class="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 font-bold">🏆</div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold uppercase">Score</div>
-                    <div id="scoreDisplay" class="text-lg font-bold">0</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Matching Board Columns -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative min-h-[380px]">
-            <!-- Left Column: IELTS Words -->
-            <div class="flex flex-col gap-3">
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1 flex items-center gap-2">
-                    <span>1. Select IELTS Word</span>
-                </h3>
-                <div id="leftColumn" class="flex flex-col gap-3"></div>
-            </div>
-
-            <!-- Right Column: Definitions -->
-            <div class="flex flex-col gap-3">
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1 flex items-center gap-2">
-                    <span>2. Select Definition</span>
-                </h3>
-                <div id="rightColumn" class="flex flex-col gap-3"></div>
-            </div>
-        </div>
-
-        <!-- INLINE STUDY CARD BELOW GRID -->
-        <div id="inlineCardContainer" class="w-full hidden transition-all duration-300">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-500/40 shadow-xl overflow-hidden pop-in">
-                <!-- Header -->
-                <div class="bg-gradient-to-r from-indigo-600 to-emerald-600 px-6 py-4 text-white flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <span class="text-3xl">🎓</span>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-extrabold text-xl leading-tight" id="cardWord">Mitigate</h3>
-                                <span id="cardPos" class="px-2 py-0.5 bg-white/20 text-white text-[10px] font-bold rounded">VERB</span>
-                            </div>
-                            <p class="text-xs text-indigo-100 italic" id="cardIpa">/ˈmɪt.ɪ.ɡeɪt/</p>
-                        </div>
-                    </div>
-                    <button onclick="speakWord(currentModalWordData.en)" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5" title="Listen British Pronunciation">
-                        <span>🔊</span> <span>🇬🇧 Listen</span>
-                    </button>
-                </div>
-
-                <!-- Card Content -->
-                <div class="p-6 space-y-4">
-                    <!-- Definition Banner -->
-                    <div class="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700">
-                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Meaning</div>
-                        <div class="text-sm font-semibold text-slate-800 dark:text-slate-100" id="cardMeaning">To make something less harmful or severe</div>
-                    </div>
-
-                    <!-- Synonyms, Antonyms & Collocations Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div class="p-3 bg-indigo-50/60 dark:bg-indigo-950/40 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
-                            <div class="text-[10px] font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">🔄 Synonyms</div>
-                            <div id="cardSynonym" class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-1">Alleviate / Ease</div>
-                        </div>
-                        <div class="p-3 bg-purple-50/60 dark:bg-purple-950/40 rounded-xl border border-purple-100 dark:border-purple-900/50">
-                            <div class="text-[10px] font-extrabold text-purple-600 dark:text-purple-400 uppercase tracking-wider">⚡ Antonyms</div>
-                            <div id="cardAntonym" class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-1">Exacerbate / Aggravate</div>
-                        </div>
-                        <div class="p-3 bg-amber-50/60 dark:bg-amber-950/40 rounded-xl border border-amber-100 dark:border-amber-900/50">
-                            <div class="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 uppercase tracking-wider">🔗 Key Collocations</div>
-                            <div id="cardCollocations" class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-1">mitigate risks, mitigate impact</div>
-                        </div>
-                    </div>
-
-                    <!-- IELTS Writing Task 2 Strategy Card -->
-                    <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">✍️ IELTS Writing Task 2 Context</span>
-                            <span id="cardEssayTopic" class="text-[10px] font-bold px-2 py-0.5 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 rounded">Environment</span>
-                        </div>
-                        <p id="cardEssayUsage" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic pt-1">
-                            "Governments must implement strict regulations to <strong class="text-emerald-600 dark:text-emerald-400">mitigate the harmful impacts</strong> of industrial pollution."
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
 
     </main>
@@ -225,7 +9,7 @@
             <div class="text-6xl">🎉</div>
             <div>
                 <h2 class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">Band 8.0 Achievement!</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">You matched all vocabulary items successfully!</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">You matched all 10 vocabulary items successfully!</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3 bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-left">
@@ -240,27 +24,27 @@
             </div>
 
             <button onclick="resetGame()" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-700 hover:to-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg transition">
-                Play Next Round
+                Play Next Category
             </button>
         </div>
     </div>
 
     <script>
-        // IELTS Comprehensive Dataset
+        // IELTS 5 Categories Dataset (10 High-Level Words Each)
         const database = {
             ielts_verbs: [
                 {
                     en: "Substantial", pos: "Adjective", ipa: "/səbˈstæn.ʃəl/",
                     collocations: "substantial increase, substantial evidence",
-                    definition: "Large in size, value, or importance",
+                    definition: "Large in size, value, or overall importance",
                     synonym: "Significant / Considerable", antonym: "Insignificant / Negligible",
-                    essayTopic: "Global Economy / Statistics",
+                    essayTopic: "Global Economy",
                     essayUsage: "There has been a substantial increase in public expenditure on renewable energy sources."
                 },
                 {
                     en: "Mitigate", pos: "Verb", ipa: "/ˈmɪt.ɪ.ɡeɪt/",
                     collocations: "mitigate the impact, mitigate climate risks",
-                    definition: "To make something less harmful or severe",
+                    definition: "To make something less harmful, painful, or severe",
                     synonym: "Alleviate / Ease", antonym: "Exacerbate / Aggravate",
                     essayTopic: "Environment & Climate Policy",
                     essayUsage: "Prompt government action is vital to mitigate the adverse effects of global warming."
@@ -268,7 +52,7 @@
                 {
                     en: "Plausible", pos: "Adjective", ipa: "/ˈplɔː.zə.bəl/",
                     collocations: "plausible explanation, plausible alternative",
-                    definition: "Seeming reasonable or likely to be true",
+                    definition: "Seeming reasonable, probable, or likely to be true",
                     synonym: "Credible / Feasible", antonym: "Unlikely / Improbable",
                     essayTopic: "Science & Technology",
                     essayUsage: "A plausible solution to traffic congestion is the expansion of subterranean rail systems."
@@ -292,110 +76,370 @@
                 {
                     en: "Detrimental", pos: "Adjective", ipa: "/ˌdet.rɪˈmen.təl/",
                     collocations: "detrimental effect, detrimental impact",
-                    definition: "Causing harm, damage, or disadvantage",
+                    definition: "Tending to cause harm, subtle damage, or disadvantage",
                     synonym: "Harmful / Damaging", antonym: "Beneficial / Advantageous",
                     essayTopic: "Health & Technology",
                     essayUsage: "Excessive screen time exerts a detrimental influence on adolescent cognitive development."
+                },
+                {
+                    en: "Imperative", pos: "Adjective", ipa: "/ɪmˈper.ə.tɪv/",
+                    collocations: "morally imperative, imperative step",
+                    definition: "Of vital importance; crucial or mandatory",
+                    synonym: "Essential / Critical", antonym: "Optional / Unnecessary",
+                    essayTopic: "Public Health Policy",
+                    essayUsage: "It is imperative that municipal authorities address healthcare inequality."
+                },
+                {
+                    en: "Prevalent", pos: "Adjective", ipa: "/ˈprev.əl.ənt/",
+                    collocations: "widely prevalent, increasingly prevalent",
+                    definition: "Widespread in a particular area or at a particular time",
+                    synonym: "Ubiquitous / Common", antonym: "Rare / Scarce",
+                    essayTopic: "Modern Lifestyle & Society",
+                    essayUsage: "Sedentary habits have become increasingly prevalent among urban office workers."
+                },
+                {
+                    en: "Unprecedented", pos: "Adjective", ipa: "/ʌnˈpres.ɪ.den.tɪd/",
+                    collocations: "unprecedented growth, unprecedented demand",
+                    definition: "Never done, known, or experienced before",
+                    synonym: "Unparalleled / Unmatched", antonym: "Conventional / Familiar",
+                    essayTopic: "Technology & Globalization",
+                    essayUsage: "The digital age has brought unprecedented opportunities for global cooperation."
+                },
+                {
+                    en: "Paramount", pos: "Adjective", ipa: "/ˈpær.ə.maʊnt/",
+                    collocations: "paramount importance, of paramount concern",
+                    definition: "More important than anything else; supreme",
+                    synonym: "Primary / Supreme", antonym: "Secondary / Trivial",
+                    essayTopic: "Governance & Safety",
+                    essayUsage: "Ensuring cybersecurity should be of paramount concern for modern banking systems."
                 }
             ],
-            ielts_topics: [
+            ielts_environment: [
                 {
                     en: "Biodiversity", pos: "Noun", ipa: "/ˌbaɪ.əʊ.daɪˈvɜː.sə.ti/",
                     collocations: "preserve biodiversity, loss of biodiversity",
-                    definition: "Variety of plant and animal life in a habitat",
+                    definition: "Variety of plant and animal life in a specific habitat",
                     synonym: "Ecological Variety", antonym: "Monoculture",
-                    essayTopic: "Environment & Wildlife",
+                    essayTopic: "Environment & Ecology",
                     essayUsage: "Deforestation poses an immediate threat to global biodiversity."
                 },
                 {
                     en: "Urbanization", pos: "Noun", ipa: "/ˌɜː.bən.aɪˈzeɪ.ʃən/",
                     collocations: "rapid urbanization, process of urbanization",
-                    definition: "Growth and expansion of cities and urban areas",
-                    synonym: "City Development", antonym: "Ruralization",
-                    essayTopic: "Society & Demographics",
-                    essayUsage: "Rapid urbanization has strained municipal infrastructure in developing nations."
+                    definition: "The process of making an area more urban and developed",
+                    synonym: "City Expansion", antonym: "Ruralization",
+                    essayTopic: "Urban Infrastructure",
+                    essayUsage: "Rapid urbanization puts increased demand on public infrastructure."
                 },
                 {
                     en: "Globalization", pos: "Noun", ipa: "/ˌɡləʊ.bəl.aɪˈzeɪ.ʃən/",
                     collocations: "cultural globalization, economic globalization",
-                    definition: "Worldwide integration of economies and cultures",
+                    definition: "Integration and interaction among worldwide people and nations",
                     synonym: "International Integration", antonym: "Isolationism",
-                    essayTopic: "Culture & Global Economy",
-                    essayUsage: "Globalization has facilitated the exchange of technological innovations across borders."
+                    essayTopic: "Global Economy",
+                    essayUsage: "Globalization has interconnected international markets and trade."
                 },
                 {
                     en: "Obsolete", pos: "Adjective", ipa: "/ˈɒb.sə.liːt/",
                     collocations: "rendered obsolete, become obsolete",
                     definition: "No longer produced or used; out of date",
                     synonym: "Outdated / Antiquated", antonym: "Modern / Cutting-edge",
-                    essayTopic: "Technology & Employment",
-                    essayUsage: "Automated assembly lines have rendered traditional manual labor jobs obsolete."
+                    essayTopic: "Technology & Labour",
+                    essayUsage: "Rapid technological progress rendered older computer models obsolete."
                 },
                 {
                     en: "Sustainable", pos: "Adjective", ipa: "/səˈsteɪ.nə.bəl/",
-                    collocations: "sustainable development, sustainable practice",
-                    definition: "Able to be maintained long-term without damage",
+                    collocations: "sustainable development, sustainable energy",
+                    definition: "Able to be maintained without exhausting natural resources",
                     synonym: "Eco-friendly / Renewable", antonym: "Unsustainable",
-                    essayTopic: "Energy & Future Policy",
-                    essayUsage: "Investing in sustainable infrastructure is imperative for long-term prosperity."
+                    essayTopic: "Environmental Policy",
+                    essayUsage: "Sustainable farming practices protect long-term soil fertility."
                 },
                 {
                     en: "Congestion", pos: "Noun", ipa: "/kənˈdʒes.tʃən/",
                     collocations: "traffic congestion, gridlock congestion",
-                    definition: "State of being overcrowded, especially traffic",
+                    definition: "State of being overcrowded, particularly vehicles on roads",
                     synonym: "Gridlock / Overcrowding", antonym: "Free Flow",
-                    essayTopic: "Transport & Urban Planning",
-                    essayUsage: "Heavy traffic congestion in major capitals leads to lost economic productivity."
+                    essayTopic: "Transport Systems",
+                    essayUsage: "Traffic congestion continues to exacerbate air pollution in major metropolitan cities."
+                },
+                {
+                    en: "Contamination", pos: "Noun", ipa: "/kənˌtæm.ɪˈneɪ.ʃən/",
+                    collocations: "water contamination, soil contamination",
+                    definition: "The action of making something impure or unsuitable",
+                    synonym: "Pollution / Infection", antonym: "Purification / Cleanliness",
+                    essayTopic: "Industrial Waste",
+                    essayUsage: "Prompt water testing prevented widespread contamination from local factory runoff."
+                },
+                {
+                    en: "Automation", pos: "Noun", ipa: "/ˌɔː.təˈmeɪ.ʃən/",
+                    collocations: "industrial automation, workplace automation",
+                    definition: "Use of automatic equipment in a system or manufacturing process",
+                    synonym: "Mechanization / Robotics", antonym: "Manual Labour",
+                    essayTopic: "Future of Work",
+                    essayUsage: "Workplace automation has elevated efficiency while replacing repetitive manual jobs."
+                },
+                {
+                    en: "Ecosystem", pos: "Noun", ipa: "/ˈiː.kəʊˌsɪs.təm/",
+                    collocations: "fragile ecosystem, marine ecosystem",
+                    definition: "A biological community of interacting organisms and their environment",
+                    synonym: "Ecological System / Environment", antonym: "Artificial Setting",
+                    essayTopic: "Conservation & Ecology",
+                    essayUsage: "Industrial waste can upset delicate coastal marine ecosystems."
+                },
+                {
+                    en: "Infrastructure", pos: "Noun", ipa: "/ˈɪn.frəˌstrʌk.tʃər/",
+                    collocations: "public infrastructure, transport infrastructure",
+                    definition: "Basic physical structures needed for the operation of a society",
+                    synonym: "Public Facilities / Transport Networks", antonym: "Superstructure",
+                    essayTopic: "Economic Planning",
+                    essayUsage: "Investment in transportation infrastructure drives national economic productivity."
                 }
             ],
             ielts_idioms: [
                 {
                     en: "Double-edged sword", pos: "Phrase", ipa: "/ˈdʌb.əl.edʒd sɔːd/",
                     collocations: "a double-edged sword, prove to be a double-edged sword",
-                    definition: "Has both beneficial and harmful outcomes",
+                    definition: "Something that has both favorable and unfavorable consequences",
                     synonym: "Mixed Blessing", antonym: "Pure Benefit",
-                    essayTopic: "Technology & Artificial Intelligence",
-                    essayUsage: "Artificial intelligence is a double-edged sword; it boosts efficiency but risks job displacement."
+                    essayTopic: "Tourism & Technology",
+                    essayUsage: "Tourism boosts the local economy, but can be a double-edged sword for the environment."
                 },
                 {
                     en: "Play a pivotal role", pos: "Phrase", ipa: "/pleɪ ə ˈpɪv.ə.təl rəʊl/",
                     collocations: "play a pivotal role in, crucial function",
-                    definition: "To be extremely important or decisive",
+                    definition: "To be extremely key, essential, or crucial to a situation",
                     synonym: "Be Essential / Key Factor", antonym: "Be Irrelevant",
-                    essayTopic: "Education & Governance",
-                    essayUsage: "Early childhood education plays a pivotal role in forming lifelong learning habits."
+                    essayTopic: "Education & Development",
+                    essayUsage: "Education plays a pivotal role in personal and societal economic growth."
                 },
                 {
                     en: "Pave the way for", pos: "Phrase", ipa: "/peɪv ðə weɪ fɔːr/",
-                    collocations: "pave the way for progress, pave the way for future generations",
-                    definition: "To make progress or development easier",
+                    collocations: "pave the way for progress, pave the way for innovation",
+                    definition: "To create circumstances enabling future progress or development",
                     synonym: "Facilitate / Enable", antonym: "Hinder / Obstruct",
-                    essayTopic: "Scientific Research & Innovation",
-                    essayUsage: "Breakthroughs in quantum computing will pave the way for unprecedented data processing."
+                    essayTopic: "Scientific Innovation",
+                    essayUsage: "Scientific discovery paves the way for technological advancement."
                 },
                 {
                     en: "A pressing issue", pos: "Phrase", ipa: "/ə ˈpres.ɪŋ ˈɪs.juː/",
-                    collocations: "address a pressing issue, urgent concern",
-                    definition: "An urgent problem needing immediate attention",
+                    collocations: "address a pressing issue, urgent problem",
+                    definition: "An urgent problem requiring immediate action and focus",
                     synonym: "Urgent Problem", antonym: "Minor Concern",
-                    essayTopic: "Global Health & Housing",
-                    essayUsage: "Housing affordability has emerged as a pressing issue in modern metropolitan areas."
+                    essayTopic: "Social Policy & Housing",
+                    essayUsage: "Housing affordability remains a pressing issue in major metropolitan areas."
                 },
                 {
                     en: "Take for granted", pos: "Phrase", ipa: "/teɪk fɔːr ˈɡrɑːn.tɪd/",
                     collocations: "take clean water for granted, fail to appreciate",
-                    definition: "To fail to appreciate the true value of something",
+                    definition: "Fail to properly appreciate someone or something due to familiarity",
                     synonym: "Underestimate / Overlook", antonym: "Cherish / Value Highly",
-                    essayTopic: "Culture & Resources",
-                    essayUsage: "Many urban citizens take clean drinking water for granted until supplies are disrupted."
+                    essayTopic: "Resource Management",
+                    essayUsage: "We shouldn't take clean water access for granted when making urban budgets."
                 },
                 {
                     en: "Bridge the gap", pos: "Phrase", ipa: "/brɪdʒ ðə ɡæp/",
-                    collocations: "bridge the gap between, narrow the inequality",
-                    definition: "Reducing differences or inequality between groups",
+                    collocations: "bridge the gap between, narrow inequality",
+                    definition: "To connect two things or reduce difference between them",
                     synonym: "Reconcile / Narrow Difference", antonym: "Widen the Divide",
-                    essayTopic: "Social Equality & Wealth",
-                    essayUsage: "Subsidized internet access can help bridge the gap between rich and poor students."
+                    essayTopic: "Social Equality",
+                    essayUsage: "Community programs help bridge the gap between social demographics."
+                },
+                {
+                    en: "Paradigm shift", pos: "Phrase", ipa: "/ˈpær.ə.daɪm ʃɪft/",
+                    collocations: "fundamental paradigm shift, undergo a paradigm shift",
+                    definition: "A fundamental change in approach or underlying assumptions",
+                    synonym: "Radical Reorientation", antonym: "Status Quo",
+                    essayTopic: "Corporate Workplace",
+                    essayUsage: "The rise of remote working represents a true paradigm shift in employment culture."
+                },
+                {
+                    en: "In the long run", pos: "Phrase", ipa: "/ɪn ðə lɒŋ rʌn/",
+                    collocations: "beneficial in the long run, cost-effective in the long run",
+                    definition: "Over a relatively long period of time; ultimately",
+                    synonym: "Eventually / Ultimately", antonym: "In the Short Term",
+                    essayTopic: "Environmental Investment",
+                    essayUsage: "Transitioning to solar energy will yield immense financial savings in the long run."
+                },
+                {
+                    en: "Shed light on", pos: "Phrase", ipa: "/ʃed laɪt ɒn/",
+                    collocations: "shed light on the issue, help to shed light on",
+                    definition: "To clarify, explain, or provide new information about a topic",
+                    synonym: "Illuminate / Clarify", antonym: "Obscure / Complicate",
+                    essayTopic: "Scientific Research",
+                    essayUsage: "Recent statistical surveys shed light on the psychological effects of isolation."
+                },
+                {
+                    en: "At the expense of", pos: "Phrase", ipa: "/æt ði ɪkˈspens ɒv/",
+                    collocations: "at the expense of health, growth at the expense of environment",
+                    definition: "So as to cause harm, neglect, or loss to something else",
+                    synonym: "To the Detriment of", antonym: "To the Benefit of",
+                    essayTopic: "Economic vs Environment",
+                    essayUsage: "Nations should not pursue economic expansion at the expense of ecological stability."
+                }
+            ],
+            ielts_education: [
+                {
+                    en: "Empirical", pos: "Adjective", ipa: "/ɪmˈpɪr.ɪ.kəl/",
+                    collocations: "empirical evidence, empirical research",
+                    definition: "Based on observation or experiment rather than theory",
+                    synonym: "Observational / Experimental", antonym: "Theoretical / Hypothetical",
+                    essayTopic: "Academic Research",
+                    essayUsage: "The research paper provided strong empirical evidence supporting the educational hypothesis."
+                },
+                {
+                    en: "Paradigm", pos: "Noun", ipa: "/ˈpær.ə.daɪm/",
+                    collocations: "dominant paradigm, research paradigm",
+                    definition: "A typical pattern, model, or conceptual framework",
+                    synonym: "Model / Prototype", antonym: "Anomaly",
+                    essayTopic: "Educational Methodology",
+                    essayUsage: "Modern pedagogy requires a shift away from the passive learning paradigm."
+                },
+                {
+                    en: "Curriculum", pos: "Noun", ipa: "/kəˈrɪk.jə.ləm/",
+                    collocations: "school curriculum, core curriculum",
+                    definition: "The subjects comprising a course of study in a school or university",
+                    synonym: "Syllabus / Course of Study", antonym: "Extracurriculars",
+                    essayTopic: "School System Reform",
+                    essayUsage: "Universities frequently update their curriculum to match dynamic industry demand."
+                },
+                {
+                    en: "Pedagogical", pos: "Adjective", ipa: "/ˌped.əˈɡɒdʒ.ɪ.kəl/",
+                    collocations: "pedagogical methods, pedagogical skills",
+                    definition: "Relating to teaching strategies and academic practice",
+                    synonym: "Instructional / Educational", antonym: "Non-instructional",
+                    essayTopic: "Teaching Practice",
+                    essayUsage: "Teachers should adopt creative pedagogical tools to engage diverse learning styles."
+                },
+                {
+                    en: "Plagiarism", pos: "Noun", ipa: "/ˈpleɪ.dʒər.ɪ.zəm/",
+                    collocations: "academic plagiarism, commit plagiarism",
+                    definition: "The practice of taking someone else's work or ideas as one's own",
+                    synonym: "Academic Dishonesty / Copying", antonym: "Originality / Authenticity",
+                    essayTopic: "Ethics in Higher Education",
+                    essayUsage: "Strict software detection ensures plagiarism is minimized across academic journals."
+                },
+                {
+                    en: "Cognitive", pos: "Adjective", ipa: "/ˈkɒɡ.nə.tɪv/",
+                    collocations: "cognitive development, cognitive skills",
+                    definition: "Relating to mental processes of acquiring knowledge and understanding",
+                    synonym: "Intellectual / Mental", antonym: "Physical / Instinctive",
+                    essayTopic: "Child Development",
+                    essayUsage: "Interactive puzzles significantly enhance early cognitive development in young children."
+                },
+                {
+                    en: "Disseminate", pos: "Verb", ipa: "/dɪˈsem.ɪ.neɪt/",
+                    collocations: "disseminate information, disseminate research",
+                    definition: "To spread or scatter information widely among communities",
+                    synonym: "Broadcast / Circulate", antonym: "Suppress / Conceal",
+                    essayTopic: "Information Technology",
+                    essayUsage: "Academic journals utilize open-access platforms to disseminate research globally."
+                },
+                {
+                    en: "Academic rigor", pos: "Noun", ipa: "/ˌæk.əˈdem.ɪk ˈrɪɡ.ər/",
+                    collocations: "maintain academic rigor, high level of academic rigor",
+                    definition: "Strictness, high standards, and intellectual thoroughness in study",
+                    synonym: "Thoroughness / Excellence", antonym: "Laxity / Negligence",
+                    essayTopic: "University Standards",
+                    essayUsage: "Higher institutions must maintain academic rigor despite increasing class sizes."
+                },
+                {
+                    en: "Analytical", pos: "Adjective", ipa: "/ˌæn.əˈlɪt.ɪ.kəl/",
+                    collocations: "analytical skills, analytical thinking",
+                    definition: "Using logical reasoning and systematic examination of components",
+                    synonym: "Critical / Logical", antonym: "Uncritical / Intuitive",
+                    essayTopic: "Curriculum Design",
+                    essayUsage: "Developing strong analytical skills enables students to evaluate arguments effectively."
+                },
+                {
+                    en: "Tertiary", pos: "Adjective", ipa: "/ˈtɜː.ʃər.i/",
+                    collocations: "tertiary education, tertiary sector",
+                    definition: "Third level in order; higher education after high school level",
+                    synonym: "Higher / Post-secondary", antonym: "Primary / Elementary",
+                    essayTopic: "Higher Education Funding",
+                    essayUsage: "Government subsidies for tertiary education reduce financial strain on low-income students."
+                }
+            ],
+            ielts_society: [
+                {
+                    en: "Eradicate", pos: "Verb", ipa: "/ɪˈræd.ɪ.keɪt/",
+                    collocations: "eradicate poverty, eradicate diseases",
+                    definition: "To destroy completely; put an end to a problem",
+                    synonym: "Eliminate / Extinguish", antonym: "Foster / Cultivate",
+                    essayTopic: "Global Health & Poverty",
+                    essayUsage: "Targeted foreign aid programs aim to eradicate extreme poverty in rural regions."
+                },
+                {
+                    en: "Disparity", pos: "Noun", ipa: "/dɪˈspær.ə.ti/",
+                    collocations: "economic disparity, wealth disparity",
+                    definition: "A great difference, imbalance, or inequality in status",
+                    synonym: "Inequality / Gap", antonym: "Equality / Parity",
+                    essayTopic: "Economic Reform",
+                    essayUsage: "Social policy aims to reduce economic disparity between urban and rural populations."
+                },
+                {
+                    en: "Demographics", pos: "Noun", ipa: "/ˌdem.əˈɡræf.ɪks/",
+                    collocations: "shifting demographics, changing demographics",
+                    definition: "Statistical data relating to the population and particular groups within it",
+                    synonym: "Population Trends", antonym: "Individual Profile",
+                    essayTopic: "Social Care & Aging",
+                    essayUsage: "Shifting demographics present new challenges for pension funding systems."
+                },
+                {
+                    en: "Segregation", pos: "Noun", ipa: "/ˌseɡ.rɪˈɡeɪ.ʃən/",
+                    collocations: "racial segregation, residential segregation",
+                    definition: "Enforced or habitual separation of different racial or social groups",
+                    synonym: "Separation / Division", antonym: "Integration / Inclusion",
+                    essayTopic: "Human Rights & History",
+                    essayUsage: "Policy measures were enacted to combat residential segregation in developing cities."
+                },
+                {
+                    en: "Governance", pos: "Noun", ipa: "/ˈɡʌv.ə.nəns/",
+                    collocations: "good governance, corporate governance",
+                    definition: "The action or manner of governing a state or organization",
+                    synonym: "Administration / Leadership", antonym: "Anarchy / Misrule",
+                    essayTopic: "Public Sector Management",
+                    essayUsage: "Transparent governance fosters citizen trust in public administrative institutions."
+                },
+                {
+                    en: "Welfare", pos: "Noun", ipa: "/ˈwel.feər/",
+                    collocations: "social welfare, public welfare",
+                    definition: "The health, happiness, and fortunes of a person or group",
+                    synonym: "Well-being / Prosperity", antonym: "Hardship / Deprivation",
+                    essayTopic: "State Responsibility",
+                    essayUsage: "Subsidized healthcare contributes directly to national public welfare."
+                },
+                {
+                    en: "Empathy", pos: "Noun", ipa: "/ˈem.pə.θi/",
+                    collocations: "foster empathy, lack of empathy",
+                    definition: "The ability to understand and share the feelings of another",
+                    synonym: "Compassion / Sympathy", antonym: "Apathy / Indifference",
+                    essayTopic: "Social Harmony",
+                    essayUsage: "Promoting cross-cultural education fosters empathy among diverse demographic groups."
+                },
+                {
+                    en: "Marginalize", pos: "Verb", ipa: "/ˈmɑː.dʒɪ.nəl.aɪz/",
+                    collocations: "marginalize communities, feel marginalized",
+                    definition: "Treat a person, group, or concept as insignificant or peripheral",
+                    synonym: "Sidelined / Exclude", antonym: "Empower / Include",
+                    essayTopic: "Minority Rights",
+                    essayUsage: "Discriminatory employment laws tend to marginalize minority worker groups."
+                },
+                {
+                    en: "Integration", pos: "Noun", ipa: "/ˌɪn.tɪˈɡreɪ.ʃən/",
+                    collocations: "social integration, cultural integration",
+                    definition: "The action or process of combining groups peacefully into a whole",
+                    synonym: "Inclusion / Assimilation", antonym: "Segregation / Exclusion",
+                    essayTopic: "Immigration Policy",
+                    essayUsage: "Language classes play a vital role in encouraging foreign worker integration."
+                },
+                {
+                    en: "Civic", pos: "Adjective", ipa: "/ˈsɪv.ɪk/",
+                    collocations: "civic duty, civic engagement",
+                    definition: "Relating to a city, citizen, or local community obligations",
+                    synonym: "Municipal / Public", antonym: "Private / Individual",
+                    essayTopic: "Citizenship & Ethics",
+                    essayUsage: "Voting in local elections is viewed as an essential civic responsibility."
                 }
             ]
         };
@@ -542,7 +586,7 @@
 
             leftList.forEach(item => {
                 const el = document.createElement('div');
-                el.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
+                el.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
                 el.dataset.id = item.id;
                 el.onclick = () => {
                     if (matchedPairs.includes(item.id)) {
@@ -553,11 +597,11 @@
                 };
 
                 el.innerHTML = `
-                    <div class="flex items-center gap-2.5">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">${item.pos}</span>
-                        <span class="font-bold text-sm text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">${item.text}</span>
+                    <div class="flex items-center gap-2">
+                        <span class="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">${item.pos}</span>
+                        <span class="font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">${item.text}</span>
                     </div>
-                    <button onclick="event.stopPropagation(); speakWord('${item.text}')" class="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs transition" title="Pronounce">
+                    <button onclick="event.stopPropagation(); speakWord('${item.text}')" class="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs transition" title="Pronounce">
                         🔊
                     </button>
                 `;
@@ -566,7 +610,7 @@
 
             rightList.forEach(item => {
                 const el = document.createElement('div');
-                el.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
+                el.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
                 el.dataset.id = item.id;
                 el.onclick = () => {
                     if (matchedPairs.includes(item.id)) {
@@ -590,11 +634,11 @@
 
             document.querySelectorAll('.card-left').forEach(c => {
                 if (!matchedPairs.includes(parseInt(c.dataset.id))) {
-                    c.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
+                    c.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
                 }
             });
 
-            el.className = "card-left bg-indigo-50/50 dark:bg-indigo-950/40 border-2 border-indigo-600 dark:border-indigo-500 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-md flex items-center justify-between group";
+            el.className = "card-left bg-indigo-50/50 dark:bg-indigo-950/40 border-2 border-indigo-600 dark:border-indigo-500 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-md flex items-center justify-between group";
             selectedLeft = { el, item };
 
             speakWord(item.text);
@@ -607,11 +651,11 @@
 
             document.querySelectorAll('.card-right').forEach(c => {
                 if (!matchedPairs.includes(parseInt(c.dataset.id))) {
-                    c.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
+                    c.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
                 }
             });
 
-            el.className = "card-right bg-indigo-50/50 dark:bg-indigo-950/40 border-2 border-indigo-600 dark:border-indigo-500 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-md flex items-center justify-between group";
+            el.className = "card-right bg-indigo-50/50 dark:bg-indigo-950/40 border-2 border-indigo-600 dark:border-indigo-500 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-md flex items-center justify-between group";
             selectedRight = { el, item };
 
             checkPairMatch();
@@ -634,8 +678,8 @@
                 document.getElementById('scoreDisplay').innerText = score;
 
                 // Lock matched styling
-                selectedLeft.el.className = "card-left bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-500 p-4 rounded-xl cursor-pointer opacity-90 flex items-center justify-between";
-                selectedRight.el.className = "card-right bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-500 p-4 rounded-xl cursor-pointer opacity-90 flex items-center justify-between";
+                selectedLeft.el.className = "card-left bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-500 p-3 rounded-xl cursor-pointer opacity-90 flex items-center justify-between";
+                selectedRight.el.className = "card-right bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-500 p-3 rounded-xl cursor-pointer opacity-90 flex items-center justify-between";
 
                 // Draw connecting SVG line
                 drawConnectingLine(selectedLeft.el, selectedRight.el);
@@ -646,8 +690,8 @@
                 selectedLeft = null;
                 selectedRight = null;
 
-                // Victory Check
-                if (matchedPairs.length === 6) {
+                // Victory Check for 10 Pairs
+                if (matchedPairs.length === 10) {
                     clearInterval(timerInterval);
                     setTimeout(() => {
                         playSoundEffect('victory');
@@ -665,8 +709,8 @@
                 selectedRight.el.classList.add('shake');
 
                 setTimeout(() => {
-                    if (selectedLeft) selectedLeft.el.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
-                    if (selectedRight) selectedRight.el.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
+                    if (selectedLeft) selectedLeft.el.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
+                    if (selectedRight) selectedRight.el.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
                     selectedLeft = null;
                     selectedRight = null;
                 }, 500);
@@ -684,12 +728,12 @@
             document.getElementById('cardAntonym').innerText = data.antonym;
             document.getElementById('cardCollocations').innerText = data.collocations;
             document.getElementById('cardEssayTopic').innerText = data.essayTopic;
-            document.getElementById('cardEssayUsage').innerHTML = `"${data.essayUsage.replace(data.en, `<strong class="text-emerald-600 dark:text-emerald-400">${data.en}</strong>`)}"`;
+            document.getElementById('cardEssayUsage').innerHTML = `"${data.essayUsage}"`;
 
             const container = document.getElementById('inlineCardContainer');
             container.classList.remove('hidden');
             
-            // Smooth auto-scroll to card if out of view
+            // Smooth auto-scroll to card
             container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
