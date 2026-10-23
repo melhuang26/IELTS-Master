@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Master - Flash-Match Pro</title>
+    <title>IELTS Master AI - Advanced Preparation Suite</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -26,18 +26,14 @@
         }
     </script>
     <style>
-        .shake {
-            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
-        }
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
             10%, 90% { transform: translate3d(-1px, 0, 0); }
             20%, 80% { transform: translate3d(2px, 0, 0); }
             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
-        .pop-in {
-            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+        .pop-in { animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.96) translateY(12px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
@@ -46,7 +42,7 @@
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300 font-sans antialiased flex flex-col relative overflow-x-hidden pb-12">
 
-    <!-- Canvas overlay for SVG Lines -->
+    <!-- Canvas overlay for SVG Lines in Flash Match -->
     <svg id="svgOverlay" class="absolute inset-0 w-full h-full pointer-events-none z-10" style="min-height: 100vh;"></svg>
 
     <!-- Navigation Header -->
@@ -54,973 +50,506 @@
         <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-md">
-                    🇬🇧
+                    🎓
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">IELTS Flash-Match Pro</h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Match Words to Definitions & Learn Context Below</p>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">IELTS Master AI</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Personalized Band 8.5+ Preparation Hub</p>
                 </div>
             </div>
 
-            <!-- Controls bar -->
-            <div class="flex items-center gap-3 flex-wrap">
-                <!-- British Voice Selector -->
-                <div class="flex items-center gap-2 bg-slate-100 dark:bg-slate-700/60 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600">
-                    <span class="text-lg">🗣️</span>
-                    <select id="britishVoiceSelect" onchange="onVoiceChanged()" class="bg-transparent text-xs font-semibold focus:outline-none dark:text-slate-200 cursor-pointer">
-                        <option value="female" class="dark:bg-slate-800">🇬🇧 British Accent (Female)</option>
-                        <option value="male" class="dark:bg-slate-800">🇬🇧 British Accent (Male)</option>
-                    </select>
-                </div>
+            <!-- Navigation Tabs & Controls -->
+            <div class="flex items-center gap-2 flex-wrap">
+                <nav class="flex bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-semibold">
+                    <button onclick="switchTab('vocab')" id="tabBtn-vocab" class="px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm">Vocabulary</button>
+                    <button onclick="switchTab('essay')" id="tabBtn-essay" class="px-3 py-1.5 rounded-lg transition text-slate-600 dark:text-slate-300">AI Essay Review</button>
+                    <button onclick="switchTab('speaking')" id="tabBtn-speaking" class="px-3 py-1.5 rounded-lg transition text-slate-600 dark:text-slate-300">AI Speaking</button>
+                    <button onclick="switchTab('analytics')" id="tabBtn-analytics" class="px-3 py-1.5 rounded-lg transition text-slate-600 dark:text-slate-300">Analytics</button>
+                </nav>
 
-                <!-- Dark Mode & Audio Controls -->
-                <button onclick="toggleAudio()" id="audioToggleBtn" title="Toggle Sound FX" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">
-                    🔊
+                <!-- Profile & Theme Toggles -->
+                <button onclick="openProfileModal()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition text-xs font-bold flex items-center gap-1" title="User Profile">
+                    👤 <span id="headerUserName">Candidate</span>
                 </button>
-                <button onclick="toggleTheme()" title="Toggle Theme" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">
-                    🌙
-                </button>
+                <button onclick="toggleAudio()" id="audioToggleBtn" title="Toggle Sound FX" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">🔊</button>
+                <button onclick="toggleTheme()" title="Toggle Theme" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">🌙</button>
             </div>
         </div>
     </header>
 
     <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full flex flex-col gap-6 z-20">
 
-        <!-- Category & Restart Controls -->
-        <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <span class="text-lg">📚</span>
-                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Vocabulary Deck:</span>
-            </div>
-
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <select id="categorySelect" onchange="resetGame()" class="flex-1 sm:flex-none px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option value="ielts_verbs">IELTS Academic Verbs & Adjectives (10 Words)</option>
-                    <option value="ielts_topics">Environment, Tech & Urbanization (10 Words)</option>
-                    <option value="ielts_idioms">Advanced Essay Expressions (10 Phrases)</option>
-                    <option value="ielts_education">Higher Education & Research (10 Words)</option>
-                    <option value="ielts_society">Society, Culture & Public Policy (10 Words)</option>
-                </select>
-                <button onclick="getHint()" class="px-3 py-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold hover:bg-amber-500/20 transition flex items-center gap-1">
-                    💡 Hint
-                </button>
-                <button onclick="resetGame()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition">
-                    Restart
-                </button>
-            </div>
-        </div>
-
-        <!-- Dashboard Stats Bar -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                <div class="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-bold">⏱️</div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold uppercase">Time</div>
-                    <div id="timerDisplay" class="text-lg font-bold">00:00</div>
+        <!-- ================= TAB 1: VOCABULARY (FLASH-MATCH PRO) ================= -->
+        <div id="tabContent-vocab" class="tab-content flex flex-col gap-6">
+            <!-- Category & Restart Controls -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">📚</span>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Vocabulary Deck:</span>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <select id="categorySelect" onchange="resetGame()" class="flex-1 sm:flex-none px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="ielts_verbs">IELTS Academic Verbs & Adjectives (10 Words)</option>
+                        <option value="ielts_topics">Environment, Tech & Urbanization (10 Words)</option>
+                        <option value="ielts_idioms">Advanced Essay Expressions (10 Phrases)</option>
+                        <option value="ielts_education">Higher Education & Research (10 Words)</option>
+                        <option value="ielts_society">Society, Culture & Public Policy (10 Words)</option>
+                    </select>
+                    <button onclick="getHint()" class="px-3 py-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold hover:bg-amber-500/20 transition flex items-center gap-1">💡 Hint</button>
+                    <button onclick="resetGame()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition">Restart</button>
                 </div>
             </div>
-            <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                <div class="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 font-bold">🎯</div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold uppercase">Matches</div>
-                    <div class="text-lg font-bold"><span id="matchCount">0</span> / <span id="totalPairsCount">10</span></div>
+
+            <!-- Dashboard Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+                    <div class="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-bold">⏱️</div>
+                    <div><div class="text-xs text-slate-400 font-semibold uppercase">Time</div><div id="timerDisplay" class="text-lg font-bold">00:00</div></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+                    <div class="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 font-bold">🎯</div>
+                    <div><div class="text-xs text-slate-400 font-semibold uppercase">Matches</div><div class="text-lg font-bold"><span id="matchCount">0</span> / <span id="totalPairsCount">10</span></div></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+                    <div class="p-2.5 rounded-lg bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 font-bold">🔥</div>
+                    <div><div class="text-xs text-slate-400 font-semibold uppercase">Streak</div><div id="streakCount" class="text-lg font-bold">0x</div></div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+                    <div class="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 font-bold">🏆</div>
+                    <div><div class="text-xs text-slate-400 font-semibold uppercase">Score</div><div id="scoreDisplay" class="text-lg font-bold">0</div></div>
                 </div>
             </div>
-            <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                <div class="p-2.5 rounded-lg bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 font-bold">🔥</div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold uppercase">Streak</div>
-                    <div id="streakCount" class="text-lg font-bold">0x</div>
+
+            <!-- Matching Board Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative min-h-[520px]">
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1">1. Select IELTS Word</h3>
+                    <div id="leftColumn" class="flex flex-col gap-3"></div>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1">2. Select Definition</h3>
+                    <div id="rightColumn" class="flex flex-col gap-3"></div>
                 </div>
             </div>
-            <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                <div class="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 font-bold">🏆</div>
-                <div>
-                    <div class="text-xs text-slate-400 font-semibold uppercase">Score</div>
-                    <div id="scoreDisplay" class="text-lg font-bold">0</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Matching Board Columns -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative min-h-[520px]">
-            <!-- Left Column: IELTS Words -->
-            <div class="flex flex-col gap-3">
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1 flex items-center gap-2">
-                    <span>1. Select IELTS Word</span>
-                </h3>
-                <div id="leftColumn" class="flex flex-col gap-3"></div>
-            </div>
-
-            <!-- Right Column: Definitions -->
-            <div class="flex flex-col gap-3">
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1 flex items-center gap-2">
-                    <span>2. Select Definition</span>
-                </h3>
-                <div id="rightColumn" class="flex flex-col gap-3"></div>
-            </div>
-        </div>
-
-        <!-- INLINE STUDY CARD BELOW GRID -->
-        <div id="inlineCardContainer" class="w-full hidden transition-all duration-300">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-500/40 shadow-xl overflow-hidden pop-in">
-                <!-- Header -->
-                <div class="bg-gradient-to-r from-indigo-600 to-emerald-600 px-6 py-4 text-white flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <span class="text-3xl">🎓</span>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-extrabold text-xl leading-tight" id="cardWord">Mitigate</h3>
-                                <span id="cardPos" class="px-2 py-0.5 bg-white/20 text-white text-[10px] font-bold rounded">VERB</span>
+            <!-- Inline Study Card -->
+            <div id="inlineCardContainer" class="w-full hidden transition-all duration-300">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-500/40 shadow-xl overflow-hidden pop-in">
+                    <div class="bg-gradient-to-r from-indigo-600 to-emerald-600 px-6 py-4 text-white flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🎓</span>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-extrabold text-xl leading-tight" id="cardWord">Mitigate</h3>
+                                    <span id="cardPos" class="px-2 py-0.5 bg-white/20 text-white text-[10px] font-bold rounded">VERB</span>
+                                </div>
+                                <p class="text-xs text-indigo-100 italic" id="cardIpa">/ˈmɪt.ɪ.ɡeɪt/</p>
                             </div>
-                            <p class="text-xs text-indigo-100 italic" id="cardIpa">/ˈmɪt.ɪ.ɡeɪt/</p>
+                        </div>
+                        <button onclick="speakWord(currentModalWordData.en)" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">🔊 <span>Listen</span></button>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Meaning</div>
+                            <div class="text-sm font-semibold text-slate-800 dark:text-slate-100" id="cardMeaning">To make something less harmful</div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="p-3 bg-indigo-50/60 dark:bg-indigo-950/40 rounded-xl border border-indigo-100"><div class="text-[10px] font-extrabold text-indigo-600 uppercase">🔄 Synonyms</div><div id="cardSynonym" class="text-xs font-bold mt-1">Alleviate</div></div>
+                            <div class="p-3 bg-purple-50/60 dark:bg-purple-950/40 rounded-xl border border-purple-100"><div class="text-[10px] font-extrabold text-purple-600 uppercase">⚡ Antonyms</div><div id="cardAntonym" class="text-xs font-bold mt-1">Exacerbate</div></div>
+                            <div class="p-3 bg-amber-50/60 dark:bg-amber-950/40 rounded-xl border border-amber-100"><div class="text-[10px] font-extrabold text-amber-600 uppercase">🔗 Collocations</div><div id="cardCollocations" class="text-xs font-bold mt-1">mitigate risks</div></div>
+                        </div>
+                        <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-extrabold text-emerald-600 uppercase">✍️ IELTS Writing Task 2 Context</span>
+                                <span id="cardEssayTopic" class="text-[10px] font-bold px-2 py-0.5 bg-emerald-500/20 text-emerald-700 rounded">Environment</span>
+                            </div>
+                            <p id="cardEssayUsage" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic pt-1"></p>
                         </div>
                     </div>
-                    <button onclick="speakWord(currentModalWordData.en)" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5" title="Listen British Pronunciation">
-                        <span>🔊</span> <span>🇬🇧 Listen</span>
-                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: AI ESSAY REVIEW ================= -->
+        <div id="tabContent-essay" class="tab-content hidden flex flex-col gap-6">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100">✍️ AI Essay Evaluator (Task 2)</h2>
+                        <p class="text-xs text-slate-500">Paste your IELTS essay below to receive instant band scores and lexical critique.</p>
+                    </div>
+                    <select id="essayPromptSelect" class="px-3 py-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-600">
+                        <option value="Some people think that universities should provide graduates with the knowledge and skills needed in the workplace. Others think that the true function of a university should be to give access to knowledge for its own sake. Discuss both views and give your opinion.">Sample Prompt: University Education vs Workplace Skills</option>
+                        <option value="Environmental problems are too big for individual countries to address on their own. Therefore, international cooperation is necessary to solve them. To what extent do you agree or disagree?">Sample Prompt: International Cooperation & Environment</option>
+                    </select>
                 </div>
 
-                <!-- Card Content -->
-                <div class="p-6 space-y-4">
-                    <!-- Definition Banner -->
-                    <div class="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700">
-                        <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Meaning</div>
-                        <div class="text-sm font-semibold text-slate-800 dark:text-slate-100" id="cardMeaning">To make something less harmful or severe</div>
-                    </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase">Your Essay Response (min 250 words recommended):</label>
+                    <textarea id="essayInput" rows="8" class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Type or paste your IELTS essay here..."></textarea>
+                </div>
 
-                    <!-- Synonyms, Antonyms & Collocations Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div class="p-3 bg-indigo-50/60 dark:bg-indigo-950/40 rounded-xl border border-indigo-100 dark:border-indigo-900/50">
-                            <div class="text-[10px] font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">🔄 Synonyms</div>
-                            <div id="cardSynonym" class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-1">Alleviate / Ease</div>
-                        </div>
-                        <div class="p-3 bg-purple-50/60 dark:bg-purple-950/40 rounded-xl border border-purple-100 dark:border-purple-900/50">
-                            <div class="text-[10px] font-extrabold text-purple-600 dark:text-purple-400 uppercase tracking-wider">⚡ Antonyms</div>
-                            <div id="cardAntonym" class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-1">Exacerbate / Aggravate</div>
-                        </div>
-                        <div class="p-3 bg-amber-50/60 dark:bg-amber-950/40 rounded-xl border border-amber-100 dark:border-amber-900/50">
-                            <div class="text-[10px] font-extrabold text-amber-600 dark:text-amber-400 uppercase tracking-wider">🔗 Key Collocations</div>
-                            <div id="cardCollocations" class="text-xs font-bold text-slate-700 dark:text-slate-200 mt-1">mitigate risks, mitigate impact</div>
-                        </div>
-                    </div>
+                <div class="flex justify-between items-center">
+                    <span id="wordCountDisplay" class="text-xs text-slate-400 font-semibold">Words: 0</span>
+                    <button onclick="evaluateEssay()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-700 text-white font-bold text-xs rounded-xl shadow-lg transition">🚀 Run AI Review & Grading</button>
+                </div>
+            </div>
 
-                    <!-- IELTS Writing Task 2 Strategy Card -->
-                    <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-extrabold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">✍️ IELTS Writing Task 2 Context</span>
-                            <span id="cardEssayTopic" class="text-[10px] font-bold px-2 py-0.5 bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 rounded">Environment</span>
-                        </div>
-                        <p id="cardEssayUsage" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic pt-1">
-                            "Governments must implement strict regulations to <strong class="text-emerald-600 dark:text-emerald-400">mitigate the harmful impacts</strong> of industrial pollution."
-                        </p>
+            <!-- Essay Review Feedback Results -->
+            <div id="essayFeedbackContainer" class="hidden space-y-6 pop-in">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                    <div class="bg-indigo-600 text-white p-4 rounded-2xl shadow-md text-center">
+                        <div class="text-xs font-bold uppercase tracking-wider text-indigo-100">Overall Band</div>
+                        <div id="scoreOverall" class="text-3xl font-black mt-1">7.5</div>
                     </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Task Response</div>
+                        <div id="scoreTR" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">7.0</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Coherence</div>
+                        <div id="scoreCC" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">8.0</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Lexical Resource</div>
+                        <div id="scoreLR" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">7.5</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center col-span-2 md:col-span-1">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Grammar</div>
+                        <div id="scoreGRA" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">7.5</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h3 class="text-sm font-extrabold text-emerald-600 uppercase">🌟 Strengths Identified</h3>
+                        <ul id="essayStrengths" class="text-xs space-y-2 text-slate-600 dark:text-slate-300 list-disc pl-4"></ul>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <h3 class="text-sm font-extrabold text-amber-600 uppercase">⚠️ Areas for Improvement</h3>
+                        <ul id="essayImprovements" class="text-xs space-y-2 text-slate-600 dark:text-slate-300 list-disc pl-4"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: AI SPEAKING COACH ================= -->
+        <div id="tabContent-speaking" class="tab-content hidden flex flex-col gap-6">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 space-y-6 text-center">
+                <div class="max-w-xl mx-auto space-y-2">
+                    <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold rounded-full">IELTS Speaking Part 2 Simulator</span>
+                    <h2 class="text-xl font-bold" id="speakingPromptTitle">Describe a time when you helped someone.</h2>
+                    <p class="text-xs text-slate-500">You have 1 minute to prepare and 2 minutes to speak. Click record to begin speaking into your microphone.</p>
+                </div>
+
+                <div class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-lg mx-auto space-y-4">
+                    <div id="speakingTimer" class="text-4xl font-black text-indigo-600 dark:text-indigo-400">02:00</div>
+                    <div class="flex justify-center gap-3">
+                        <button onclick="startSpeakingRecording()" id="recordBtn" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-lg transition flex items-center gap-2">🎙️ Start Recording</button>
+                        <button onclick="stopSpeakingRecording()" id="stopBtn" disabled class="px-6 py-3 bg-slate-300 dark:bg-slate-700 text-slate-500 rounded-xl text-xs font-bold cursor-not-allowed transition">⏹️ Finish & Analyze</button>
+                    </div>
+                </div>
+
+                <!-- Speaking Feedback Results -->
+                <div id="speakingFeedbackContainer" class="hidden text-left space-y-4 pop-in max-w-2xl mx-auto">
+                    <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-emerald-600 uppercase">Estimated Speaking Band</div>
+                            <div class="text-2xl font-black text-slate-800 dark:text-slate-100">Band 8.0</div>
+                        </div>
+                        <span class="text-3xl">🎯</span>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+                        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"><div class="text-[10px] text-slate-400 uppercase font-bold">Fluency</div><div class="text-lg font-black text-indigo-600 mt-1">8.0</div></div>
+                        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"><div class="text-[10px] text-slate-400 uppercase font-bold">Lexical</div><div class="text-lg font-black text-indigo-600 mt-1">7.5</div></div>
+                        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"><div class="text-[10px] text-slate-400 uppercase font-bold">Grammar</div><div class="text-lg font-black text-indigo-600 mt-1">8.0</div></div>
+                        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"><div class="text-[10px] text-slate-400 uppercase font-bold">Pronunciation</div><div class="text-lg font-black text-indigo-600 mt-1">8.5</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: ANALYTICS & PROGRESS ================= -->
+        <div id="tabContent-analytics" class="tab-content hidden flex flex-col gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div class="text-xs text-slate-400 font-bold uppercase">Total Study Time</div>
+                    <div id="statStudyTime" class="text-3xl font-black text-indigo-600">3.5 Hours</div>
+                    <p class="text-xs text-slate-500">Consistent daily practice improves band score velocity.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div class="text-xs text-slate-400 font-bold uppercase">Vocabulary Mastered</div>
+                    <div id="statVocabCount" class="text-3xl font-black text-emerald-600">40 / 50</div>
+                    <p class="text-xs text-slate-500">80% deck completion across Academic & Idioms.</p>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div class="text-xs text-slate-400 font-bold uppercase">Target Band Goal</div>
+                    <div id="statTargetBand" class="text-3xl font-black text-purple-600">Band 8.0</div>
+                    <p class="text-xs text-slate-500">You are on track to achieve your target!</p>
                 </div>
             </div>
         </div>
 
     </main>
 
+    <!-- User Profile Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-sm w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4 pop-in">
+            <h3 class="text-lg font-black">Candidate Profile Settings</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Full Name</label>
+                    <input id="profileNameInput" type="text" class="w-full mt-1 px-3 py-2 bg-slate-100 dark:bg-slate-900 rounded-xl text-sm border border-slate-200 dark:border-slate-700 focus:outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Target IELTS Band</label>
+                    <select id="profileBandSelect" class="w-full mt-1 px-3 py-2 bg-slate-100 dark:bg-slate-900 rounded-xl text-sm border border-slate-200 dark:border-slate-700 focus:outline-none">
+                        <option value="7.0">Band 7.0 (Good User)</option>
+                        <option value="7.5">Band 7.5 (Very Good User)</option>
+                        <option value="8.0">Band 8.0 (Expert User)</option>
+                        <option value="8.5">Band 8.5+ (Mastery)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="saveProfile()" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow">Save Profile</button>
+                <button onclick="closeProfileModal()" class="px-4 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Victory Overlay -->
     <div id="victoryOverlay" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-8 text-center border border-slate-200 dark:border-slate-700 shadow-2xl space-y-6 pop-in">
             <div class="text-6xl">🎉</div>
             <div>
-                <h2 class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">Band 8.0 Achievement!</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">You matched all 10 vocabulary items successfully!</p>
+                <h2 class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">Deck Mastered!</h2>
+                <p class="text-sm text-slate-500 mt-1">You successfully matched all 10 vocabulary items!</p>
             </div>
-
-            <div class="grid grid-cols-2 gap-3 bg-slate-50 dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-left">
-                <div>
-                    <div class="text-xs text-slate-400 font-bold uppercase">Final Score</div>
-                    <div id="finalScore" class="text-xl font-black text-indigo-600 dark:text-indigo-400">0</div>
-                </div>
-                <div>
-                    <div class="text-xs text-slate-400 font-bold uppercase">Time Taken</div>
-                    <div id="finalTime" class="text-xl font-black text-emerald-600 dark:text-emerald-400">00:00</div>
-                </div>
-            </div>
-
-            <button onclick="resetGame()" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-700 hover:to-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg transition">
-                Play Next Round
-            </button>
+            <button onclick="resetGame()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl shadow-lg transition">Play Next Round</button>
         </div>
     </div>
 
+    <!-- Main JavaScript Application Logic -->
     <script>
-        // IELTS Comprehensive Dataset (5 Categories x 10 Words = 50 Items)
+        // User Profile State
+        let userProfile = { name: "Alex Candidate", targetBand: "8.5" };
+
+        function loadProfile() {
+            const saved = localStorage.getItem('ielts_user_profile');
+            if (saved) userProfile = JSON.parse(saved);
+            document.getElementById('headerUserName').innerText = userProfile.name.split(' ')[0];
+            document.getElementById('profileNameInput').value = userProfile.name;
+            document.getElementById('profileBandSelect').value = userProfile.targetBand;
+            document.getElementById('statTargetBand').innerText = `Band ${userProfile.targetBand}`;
+        }
+
+        function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
+        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+        function saveProfile() {
+            userProfile.name = document.getElementById('profileNameInput').value || 'Candidate';
+            userProfile.targetBand = document.getElementById('profileBandSelect').value;
+            localStorage.setItem('ielts_user_profile', JSON.stringify(userProfile));
+            loadProfile();
+            closeProfileModal();
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(el => {
+                el.className = "px-3 py-1.5 rounded-lg transition text-slate-600 dark:text-slate-300";
+            });
+            document.getElementById(`tabContent-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tabBtn-${tabId}`).className = "px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm";
+        }
+
+        // AI Essay Evaluation Simulator
+        document.getElementById('essayInput').addEventListener('input', (e) => {
+            const words = e.target.value.trim().split(/\s+/).filter(Boolean).length;
+            document.getElementById('wordCountDisplay').innerText = `Words: ${words}`;
+        });
+
+        function evaluateEssay() {
+            const text = document.getElementById('essayInput').value.trim();
+            if (text.length < 50) {
+                alert("Please write a bit more of your essay before running AI review.");
+                return;
+            }
+            document.getElementById('essayFeedbackContainer').classList.remove('hidden');
+            document.getElementById('essayStrengths').innerHTML = `
+                <li>Good lexical variety with strong academic verbs.</li>
+                <li>Clear paragraph structuring and logical progression.</li>
+            `;
+            document.getElementById('essayImprovements').innerHTML = `
+                <li>Integrate more complex passive structures to boost grammatical range.</li>
+                <li>Ensure precise use of cohesive devices between body paragraphs.</li>
+            `;
+        }
+
+        // AI Speaking Simulator Controls
+        let speakingTimerInterval;
+        function startSpeakingRecording() {
+            document.getElementById('recordBtn').disabled = true;
+            document.getElementById('recordBtn').className = "px-6 py-3 bg-slate-300 dark:bg-slate-700 text-slate-500 rounded-xl text-xs font-bold cursor-not-allowed";
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('stopBtn').className = "px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg transition";
+            
+            let timeLeft = 120;
+            speakingTimerInterval = setInterval(() => {
+                timeLeft--;
+                let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                let s = (timeLeft % 60).toString().padStart(2, '0');
+                document.getElementById('speakingTimer').innerText = `${m}:${s}`;
+                if (timeLeft <= 0) stopSpeakingRecording();
+            }, 1000);
+        }
+
+        function stopSpeakingRecording() {
+            clearInterval(speakingTimerInterval);
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('stopBtn').className = "px-6 py-3 bg-slate-300 dark:bg-slate-700 text-slate-500 rounded-xl text-xs font-bold cursor-not-allowed";
+            document.getElementById('speakingFeedbackContainer').classList.remove('hidden');
+        }
+
+        // Flash-Match Game Dataset & Logic
         const database = {
             ielts_verbs: [
-                {
-                    en: "Substantial", pos: "Adjective", ipa: "/səbˈstæn.ʃəl/",
-                    collocations: "substantial increase, substantial evidence",
-                    definition: "Large in size, value, or importance",
-                    synonym: "Significant / Considerable", antonym: "Insignificant / Negligible",
-                    essayTopic: "Global Economy & Statistics",
-                    essayUsage: "There has been a substantial increase in public expenditure on renewable energy sources."
-                },
-                {
-                    en: "Mitigate", pos: "Verb", ipa: "/ˈmɪt.ɪ.ɡeɪt/",
-                    collocations: "mitigate the impact, mitigate climate risks",
-                    definition: "To make something less harmful or severe",
-                    synonym: "Alleviate / Ease", antonym: "Exacerbate / Aggravate",
-                    essayTopic: "Environment & Climate Policy",
-                    essayUsage: "Prompt government action is vital to mitigate the adverse effects of global warming."
-                },
-                {
-                    en: "Plausible", pos: "Adjective", ipa: "/ˈplɔː.zə.bəl/",
-                    collocations: "plausible explanation, plausible alternative",
-                    definition: "Seeming reasonable or likely to be true",
-                    synonym: "Credible / Feasible", antonym: "Unlikely / Improbable",
-                    essayTopic: "Science & Transport Planning",
-                    essayUsage: "A plausible solution to traffic congestion is the expansion of subterranean rail systems."
-                },
-                {
-                    en: "Exacerbate", pos: "Verb", ipa: "/ɪɡˈzæs.ə.beɪt/",
-                    collocations: "exacerbate the problem, exacerbate poverty",
-                    definition: "To make a bad situation or problem worse",
-                    synonym: "Worsen / Aggravate", antonym: "Ameliorate / Improve",
-                    essayTopic: "Social Issues & Urbanization",
-                    essayUsage: "Unregulated urban sprawl will exacerbate existing environmental degradation."
-                },
-                {
-                    en: "Advocate", pos: "Verb", ipa: "/ˈæd.və.keɪt/",
-                    collocations: "advocate for reform, strongly advocate",
-                    definition: "To publicly support or recommend a cause or policy",
-                    synonym: "Endorse / Champion", antonym: "Oppose / Condemn",
-                    essayTopic: "Education & Public Policy",
-                    essayUsage: "Many educational experts advocate incorporating practical vocational skills into school curricula."
-                },
-                {
-                    en: "Detrimental", pos: "Adjective", ipa: "/ˌdet.rɪˈmen.təl/",
-                    collocations: "detrimental effect, detrimental impact",
-                    definition: "Causing harm, damage, or disadvantage",
-                    synonym: "Harmful / Damaging", antonym: "Beneficial / Advantageous",
-                    essayTopic: "Health & Youth Welfare",
-                    essayUsage: "Excessive screen time exerts a detrimental influence on adolescent cognitive development."
-                },
-                {
-                    en: "Compelling", pos: "Adjective", ipa: "/kəmˈpel.ɪŋ/",
-                    collocations: "compelling argument, compelling evidence",
-                    definition: "Evoking interest or attention in a powerfully convincing way",
-                    synonym: "Persuasive / Convincing", antonym: "Unconvincing / Weak",
-                    essayTopic: "Public Policy & Law",
-                    essayUsage: "There are compelling arguments in favor of subsidizing public transport systems."
-                },
-                {
-                    en: "Consolidate", pos: "Verb", ipa: "/kənˈsɒl.ɪ.deɪt/",
-                    collocations: "consolidate power, consolidate gains",
-                    definition: "To combine things into a single, stronger, or more coherent whole",
-                    synonym: "Strengthen / Fortify", antonym: "Weaken / Disperse",
-                    essayTopic: "Economics & Governance",
-                    essayUsage: "Developing nations must consolidate their fiscal infrastructure to attract foreign investment."
-                },
-                {
-                    en: "Imperative", pos: "Adjective", ipa: "/ɪmˈper.ə.tɪv/",
-                    collocations: "morally imperative, imperative that",
-                    definition: "Of vital importance; crucial or mandatory",
-                    synonym: "Crucial / Essential", antonym: "Optional / Unnecessary",
-                    essayTopic: "Global Security & Health",
-                    essayUsage: "It is imperative that international bodies collaborate to prevent future pandemics."
-                },
-                {
-                    en: "Prevalent", pos: "Adjective", ipa: "/ˈprev.əl.ənt/",
-                    collocations: "prevalent attitude, widely prevalent",
-                    definition: "Widespread or commonly occurring in a particular area or time",
-                    synonym: "Widespread / Ubiquitous", antonym: "Rare / Uncommon",
-                    essayTopic: "Sociology & Lifestyle",
-                    essayUsage: "Sedentary lifestyles have become increasingly prevalent in post-industrial societies."
-                }
-            ],
-            ielts_topics: [
-                {
-                    en: "Biodiversity", pos: "Noun", ipa: "/ˌbaɪ.əʊ.daɪˈvɜː.sə.ti/",
-                    collocations: "preserve biodiversity, loss of biodiversity",
-                    definition: "Variety of plant and animal life in a habitat",
-                    synonym: "Ecological Variety", antonym: "Monoculture",
-                    essayTopic: "Environment & Wildlife",
-                    essayUsage: "Deforestation poses an immediate threat to global biodiversity."
-                },
-                {
-                    en: "Urbanization", pos: "Noun", ipa: "/ˌɜː.bən.aɪˈzeɪ.ʃən/",
-                    collocations: "rapid urbanization, process of urbanization",
-                    definition: "Growth and expansion of cities and urban areas",
-                    synonym: "City Development", antonym: "Ruralization",
-                    essayTopic: "Society & Demographics",
-                    essayUsage: "Rapid urbanization has strained municipal infrastructure in developing nations."
-                },
-                {
-                    en: "Globalization", pos: "Noun", ipa: "/ˌɡləʊ.bəl.aɪˈzeɪ.ʃən/",
-                    collocations: "cultural globalization, economic globalization",
-                    definition: "Worldwide integration of economies and cultures",
-                    synonym: "International Integration", antonym: "Isolationism",
-                    essayTopic: "Culture & Global Economy",
-                    essayUsage: "Globalization has facilitated the exchange of technological innovations across borders."
-                },
-                {
-                    en: "Obsolete", pos: "Adjective", ipa: "/ˈɒb.sə.liːt/",
-                    collocations: "rendered obsolete, become obsolete",
-                    definition: "No longer produced or used; out of date",
-                    synonym: "Outdated / Antiquated", antonym: "Modern / Cutting-edge",
-                    essayTopic: "Technology & Employment",
-                    essayUsage: "Automated assembly lines have rendered traditional manual labor jobs obsolete."
-                },
-                {
-                    en: "Sustainable", pos: "Adjective", ipa: "/səˈsteɪ.nə.bəl/",
-                    collocations: "sustainable development, sustainable practice",
-                    definition: "Able to be maintained long-term without damage",
-                    synonym: "Eco-friendly / Renewable", antonym: "Unsustainable",
-                    essayTopic: "Energy & Future Policy",
-                    essayUsage: "Investing in sustainable infrastructure is imperative for long-term prosperity."
-                },
-                {
-                    en: "Congestion", pos: "Noun", ipa: "/kənˈdʒes.tʃən/",
-                    collocations: "traffic congestion, gridlock congestion",
-                    definition: "State of being overcrowded, especially traffic",
-                    synonym: "Gridlock / Overcrowding", antonym: "Free Flow",
-                    essayTopic: "Transport & Urban Planning",
-                    essayUsage: "Heavy traffic congestion in major capitals leads to lost economic productivity."
-                },
-                {
-                    en: "Depletion", pos: "Noun", ipa: "/dɪˈpliː.ʃən/",
-                    collocations: "resource depletion, ozone depletion",
-                    definition: "Reduction in the number or quantity of something",
-                    synonym: "Exhaustion / Consumption", antonym: "Replenishment",
-                    essayTopic: "Natural Resources",
-                    essayUsage: "The rapid depletion of freshwater reserves demands immediate conservation measures."
-                },
-                {
-                    en: "Infrastructure", pos: "Noun", ipa: "/ˈɪn.frəˌstrʌk.tʃər/",
-                    collocations: "transport infrastructure, digital infrastructure",
-                    definition: "Basic physical and organizational structures of a facility or society",
-                    synonym: "Framework / System", antonym: "Disorganization",
-                    essayTopic: "Economic Development",
-                    essayUsage: "Upgrading national infrastructure is critical to maintaining industrial competitiveness."
-                },
-                {
-                    en: "Automation", pos: "Noun", ipa: "/ˌɔː.təˈmeɪ.ʃən/",
-                    collocations: "factory automation, increased automation",
-                    definition: "Use of automatic equipment in manufacturing or processes",
-                    synonym: "Mechanization / Robotization", antonym: "Manual Labor",
-                    essayTopic: "Workplace & Technology",
-                    essayUsage: "Widespread automation in manufacturing may displace low-skilled workers."
-                },
-                {
-                    en: "Ecosystem", pos: "Noun", ipa: "/ˈiː.kəʊˌsɪs.təm/",
-                    collocations: "fragile ecosystem, marine ecosystem",
-                    definition: "Biological community of interacting organisms and environment",
-                    synonym: "Biosphere / Environment", antonym: "Unnatural Setting",
-                    essayTopic: "Ecology & Conservation",
-                    essayUsage: "Chemical runoff from agricultural land severely disrupts local river ecosystems."
-                }
-            ],
-            ielts_idioms: [
-                {
-                    en: "Double-edged sword", pos: "Phrase", ipa: "/ˈdʌb.əl.edʒd sɔːd/",
-                    collocations: "a double-edged sword, prove to be a double-edged sword",
-                    definition: "Has both beneficial and harmful outcomes",
-                    synonym: "Mixed Blessing", antonym: "Pure Benefit",
-                    essayTopic: "Technology & Artificial Intelligence",
-                    essayUsage: "Artificial intelligence is a double-edged sword; it boosts efficiency but risks job displacement."
-                },
-                {
-                    en: "Play a pivotal role", pos: "Phrase", ipa: "/pleɪ ə ˈpɪv.ə.təl rəʊl/",
-                    collocations: "play a pivotal role in, crucial function",
-                    definition: "To be extremely important or decisive",
-                    synonym: "Be Essential / Key Factor", antonym: "Be Irrelevant",
-                    essayTopic: "Education & Governance",
-                    essayUsage: "Early childhood education plays a pivotal role in forming lifelong learning habits."
-                },
-                {
-                    en: "Pave the way for", pos: "Phrase", ipa: "/peɪv ðə weɪ fɔːr/",
-                    collocations: "pave the way for progress, pave the way for future generations",
-                    definition: "To make progress or development easier",
-                    synonym: "Facilitate / Enable", antonym: "Hinder / Obstruct",
-                    essayTopic: "Scientific Research & Innovation",
-                    essayUsage: "Breakthroughs in quantum computing will pave the way for unprecedented data processing."
-                },
-                {
-                    en: "A pressing issue", pos: "Phrase", ipa: "/ə ˈpres.ɪŋ ˈɪs.juː/",
-                    collocations: "address a pressing issue, urgent concern",
-                    definition: "An urgent problem needing immediate attention",
-                    synonym: "Urgent Problem", antonym: "Minor Concern",
-                    essayTopic: "Global Health & Housing",
-                    essayUsage: "Housing affordability has emerged as a pressing issue in modern metropolitan areas."
-                },
-                {
-                    en: "Take for granted", pos: "Phrase", ipa: "/teɪk fɔːr ˈɡrɑːn.tɪd/",
-                    collocations: "take clean water for granted, fail to appreciate",
-                    definition: "To fail to appreciate the true value of something",
-                    synonym: "Underestimate / Overlook", antonym: "Cherish / Value Highly",
-                    essayTopic: "Culture & Resources",
-                    essayUsage: "Many urban citizens take clean drinking water for granted until supplies are disrupted."
-                },
-                {
-                    en: "Bridge the gap", pos: "Phrase", ipa: "/brɪdʒ ðə ɡæp/",
-                    collocations: "bridge the gap between, narrow the inequality",
-                    definition: "Reducing differences or inequality between groups",
-                    synonym: "Reconcile / Narrow Difference", antonym: "Widen the Divide",
-                    essayTopic: "Social Equality & Wealth",
-                    essayUsage: "Subsidized internet access can help bridge the gap between rich and poor students."
-                },
-                {
-                    en: "At the expense of", pos: "Phrase", ipa: "/æt ði ɪkˈspens ɒv/",
-                    collocations: "growth at the expense of environment",
-                    definition: "So as to cause harm or neglect to something else",
-                    synonym: "To the Detriment of", antonym: "To the Benefit of",
-                    essayTopic: "Economic Growth vs Ecology",
-                    essayUsage: "Economic expansion should not be pursued at the expense of environmental sustainability."
-                },
-                {
-                    en: "In the long run", pos: "Phrase", ipa: "/ɪn ðə lɒŋ rʌn/",
-                    collocations: "cost-effective in the long run",
-                    definition: "Over a long period of time in the future",
-                    synonym: "Eventually / Ultimately", antonym: "In the Short Term",
-                    essayTopic: "Investment Policy",
-                    essayUsage: "Investing in early childhood healthcare saves public money in the long run."
-                },
-                {
-                    en: "Shed light on", pos: "Phrase", ipa: "/ʃed laɪt ɒn/",
-                    collocations: "shed light on the issue",
-                    definition: "To clarify or reveal new information about a topic",
-                    synonym: "Elucidate / Clarify", antonym: "Obscure / Conceal",
-                    essayTopic: "Academic Research",
-                    essayUsage: "Recent sociological studies have shed light on the root causes of youth unemployment."
-                },
-                {
-                    en: "A step in the right direction", pos: "Phrase", ipa: "/ə step ɪn ðə raɪt dɪˈrek.ʃən/",
-                    collocations: "positive measure, initial step",
-                    definition: "An action that improves a situation or helps achieve a goal",
-                    synonym: "Positive Measure", antonym: "Retrograde Step",
-                    essayTopic: "Reform & Legislation",
-                    essayUsage: "Banning single-use plastics is a small step in the right direction towards marine conservation."
-                }
-            ],
-            ielts_education: [
-                {
-                    en: "Pedagogy", pos: "Noun", ipa: "/ˈped.ə.ɡɒdʒ.i/",
-                    collocations: "modern pedagogy, effective pedagogy",
-                    definition: "The method and practice of teaching academic subjects",
-                    synonym: "Teaching Methodology", antonym: "Self-study",
-                    essayTopic: "Education Reform",
-                    essayUsage: "Adopting student-centered pedagogy improves critical thinking among university undergraduates."
-                },
-                {
-                    en: "Curriculum", pos: "Noun", ipa: "/kəˈrɪk.jə.ləm/",
-                    collocations: "core curriculum, national curriculum",
-                    definition: "The subjects comprising a course of study in a school or college",
-                    synonym: "Syllabus / Coursework", antonym: "Extracurriculars",
-                    essayTopic: "Schooling Standards",
-                    essayUsage: "Financial literacy ought to be integrated into the compulsory high school curriculum."
-                },
-                {
-                    en: "Empirical", pos: "Adjective", ipa: "/ɪmˈpɪr.ɪ.kəl/",
-                    collocations: "empirical evidence, empirical research",
-                    definition: "Based on observation or experiment rather than theory or logic",
-                    synonym: "Experimental / Observed", antonym: "Theoretical / Hypothetical",
-                    essayTopic: "Academic Methodology",
-                    essayUsage: "Policy decisions should be grounded in robust empirical research rather than ideology."
-                },
-                {
-                    en: "Literacy", pos: "Noun", ipa: "/ˈlɪt.ər.ə.si/",
-                    collocations: "digital literacy, adult literacy rate",
-                    definition: "The ability to read and write or possess knowledge in a specific area",
-                    synonym: "Competence / Proficiency", antonym: "Illiteracy / Ignorance",
-                    essayTopic: "Global Education Development",
-                    essayUsage: "Promoting digital literacy is essential to prepare the workforce for future technological shifts."
-                },
-                {
-                    en: "Discipline", pos: "Noun", ipa: "/ˈdɪs.ə.plɪn/",
-                    collocations: "academic discipline, scientific discipline",
-                    definition: "A branch of knowledge or field of study",
-                    synonym: "Field of Study / Subject", antonym: "Disorganization",
-                    essayTopic: "Interdisciplinary Research",
-                    essayUsage: "Environmental science is an interdisciplinary discipline drawing on chemistry, physics, and economics."
-                },
-                {
-                    en: "Cognitive", pos: "Adjective", ipa: "/ˈkɒɡ.nə.tɪv/",
-                    collocations: "cognitive development, cognitive skills",
-                    definition: "Relating to the mental processes of perception, memory, and reasoning",
-                    synonym: "Intellectual / Mental", antonym: "Physical / Somatic",
-                    essayTopic: "Child Development",
-                    essayUsage: "Learning a second language early in life stimulates cognitive development."
-                },
-                {
-                    en: "Rote learning", pos: "Noun", ipa: "/rəʊt ˈlɜː.nɪŋ/",
-                    collocations: "memorization by rote, rely on rote learning",
-                    definition: "Memorization technique based on repetition without deep understanding",
-                    synonym: "Memorization", antonym: "Critical Thinking",
-                    essayTopic: "Examination Systems",
-                    essayUsage: "Educational systems that prioritize rote learning often fail to foster creativity."
-                },
-                {
-                    en: "Tertiary", pos: "Adjective", ipa: "/ˈtɜː.ʃər.i/",
-                    collocations: "tertiary education, tertiary sector",
-                    definition: "Relating to post-secondary education, such as universities or colleges",
-                    synonym: "Higher Education", antonym: "Primary Education",
-                    essayTopic: "Higher Education Subsidies",
-                    essayUsage: "Free access to tertiary education can reduce socio-economic inequalities."
-                },
-                {
-                    en: "Scholarship", pos: "Noun", ipa: "/ˈskɒl.ə.ʃɪp/",
-                    collocations: "academic scholarship, merit-based scholarship",
-                    definition: "Financial grant awarded to a student to support their education",
-                    synonym: "Bursary / Grant", antonym: "Student Debt",
-                    essayTopic: "University Access",
-                    essayUsage: "Merit-based scholarships enable talented students from underprivileged backgrounds to attend university."
-                },
-                {
-                    en: "Comprehensive", pos: "Adjective", ipa: "/ˌkɒm.prɪˈhen.sɪv/",
-                    collocations: "comprehensive assessment, comprehensive review",
-                    definition: "Complete and including all or nearly all elements or aspects",
-                    synonym: "Exhaustive / All-inclusive", antonym: "Partial / Limited",
-                    essayTopic: "Educational Evaluation",
-                    essayUsage: "A comprehensive assessment system evaluates practical skills alongside theoretical knowledge."
-                }
-            ],
-            ielts_society: [
-                {
-                    en: "Demographics", pos: "Noun", ipa: "/ˌdem.əˈɡræf.ɪks/",
-                    collocations: "changing demographics, demographic shift",
-                    definition: "Statistical characteristics of human populations",
-                    synonym: "Population Structure", antonym: "Individual Profile",
-                    essayTopic: "Aging Population",
-                    essayUsage: "Shifting demographics in Western nations present long-term challenges for healthcare systems."
-                },
-                {
-                    en: "Inclusion", pos: "Noun", ipa: "/ɪnˈkluː.ʒən/",
-                    collocations: "social inclusion, financial inclusion",
-                    definition: "Practice or policy of providing equal access to opportunities and resources",
-                    synonym: "Integration / Equity", antonym: "Exclusion / Marginalization",
-                    essayTopic: "Minority Rights & Welfare",
-                    essayUsage: "Promoting social inclusion ensures marginalized groups actively participate in economic life."
-                },
-                {
-                    en: "Disparity", pos: "Noun", ipa: "/dɪˈspær.ə.ti/",
-                    collocations: "economic disparity, wealth disparity",
-                    definition: "A great difference or inequality between groups",
-                    synonym: "Inequality / Gap", antonym: "Equality / Parity",
-                    essayTopic: "Wealth Distribution",
-                    essayUsage: "Governments must address the widening income disparity between rural and urban households."
-                },
-                {
-                    en: "Subsidize", pos: "Verb", ipa: "/ˈsʌb.sɪ.daɪz/",
-                    collocations: "heavily subsidize, state-subsidized",
-                    definition: "To support financially with public funds or grants",
-                    synonym: "Fund / Finance", antonym: "Tax / Tax heavily",
-                    essayTopic: "Public Goods & Health",
-                    essayUsage: "The state should heavily subsidize public transportation to reduce carbon emissions."
-                },
-                {
-                    en: "Assimilation", pos: "Noun", ipa: "/əˌsɪm.ɪˈleɪ.ʃən/",
-                    collocations: "cultural assimilation, process of assimilation",
-                    definition: "Process whereby individuals adapt to the culture of a dominant group",
-                    synonym: "Integration / Adaptation", antonym: "Separation / Segregation",
-                    essayTopic: "Immigration & Integration",
-                    essayUsage: "Effective language programs accelerate the cultural assimilation of new immigrants."
-                },
-                {
-                    en: "Cohesion", pos: "Noun", ipa: "/kəʊˈhiː.ʒən/",
-                    collocations: "social cohesion, community cohesion",
-                    definition: "The state of sticking together or uniting a community",
-                    synonym: "Unity / Solidarity", antonym: "Division / Fragmentation",
-                    essayTopic: "Multiculturalism",
-                    essayUsage: "Community outreach initiatives play a crucial role in reinforcing social cohesion."
-                },
-                {
-                    en: "Marginalized", pos: "Adjective", ipa: "/ˈmɑː.dʒɪ.nəl.aɪzd/",
-                    collocations: "marginalized communities, feel marginalized",
-                    definition: "Treated as insignificant or pushed to the fringes of society",
-                    synonym: "Disadvantaged / Oppressed", antonym: "Privileged / Dominant",
-                    essayTopic: "Poverty & Equity",
-                    essayUsage: "Equal access to legal aid is necessary to protect marginalized communities."
-                },
-                {
-                    en: "Legislation", pos: "Noun", ipa: "/ˌledʒ.ɪˈsleɪ.ʃən/",
-                    collocations: "enact legislation, strict legislation",
-                    definition: "Laws considered collectively or the act of making laws",
-                    synonym: "Statutes / Laws", antonym: "Deregulation",
-                    essayTopic: "Environmental Regulation",
-                    essayUsage: "Enacting strict environmental legislation is essential to deter industrial polluters."
-                },
-                {
-                    en: "Heritage", pos: "Noun", ipa: "/ˈher.ɪ.tɪdʒ/",
-                    collocations: "cultural heritage, preserve heritage",
-                    definition: "Traditions, languages, or achievements passed down through generations",
-                    synonym: "Legacy / Tradition", antonym: "Modernity",
-                    essayTopic: "Culture & Tourism",
-                    essayUsage: "Tourism generates revenue needed to restore and preserve national cultural heritage sites."
-                },
-                {
-                    en: "Bureaucracy", pos: "Noun", ipa: "/bjʊəˈrɒk.rə.si/",
-                    collocations: "excessive bureaucracy, government bureaucracy",
-                    definition: "System of government with complicated administrative procedures",
-                    synonym: "Red Tape / Administration", antonym: "Streamlined Service",
-                    essayTopic: "Government Efficiency",
-                    essayUsage: "Excessive bureaucracy often delays the distribution of disaster relief funds."
-                }
+                { en: "Substantial", pos: "Adjective", ipa: "/səbˈstæn.ʃəl/", collocations: "substantial increase", definition: "Large in size, value, or importance", synonym: "Significant", antonym: "Insignificant", essayTopic: "Global Economy", essayUsage: "There has been a substantial increase in public expenditure." },
+                { en: "Mitigate", pos: "Verb", ipa: "/ˈmɪt.ɪ.ɡeɪt/", collocations: "mitigate the impact", definition: "To make something less harmful or severe", synonym: "Alleviate", antonym: "Exacerbate", essayTopic: "Environment", essayUsage: "Prompt government action is vital to mitigate global warming." },
+                { en: "Plausible", pos: "Adjective", ipa: "/ˈplɔː.zə.bəl/", collocations: "plausible explanation", definition: "Seeming reasonable or likely to be true", synonym: "Credible", antonym: "Unlikely", essayTopic: "Science", essayUsage: "A plausible solution to traffic congestion is rail expansion." },
+                { en: "Exacerbate", pos: "Verb", ipa: "/ɪɡˈzæs.ə.beɪt/", collocations: "exacerbate the problem", definition: "To make a bad situation worse", synonym: "Worsen", antonym: "Ameliorate", essayTopic: "Urbanization", essayUsage: "Unregulated urban sprawl will exacerbate environmental degradation." },
+                { en: "Advocate", pos: "Verb", ipa: "/ˈæd.və.keɪt/", collocations: "advocate for reform", definition: "To publicly support or recommend a cause", synonym: "Endorse", antonym: "Oppose", essayTopic: "Education", essayUsage: "Experts advocate incorporating vocational skills into curricula." },
+                { en: "Detrimental", pos: "Adjective", ipa: "/ˌdet.rɪˈmen.təl/", collocations: "detrimental effect", definition: "Causing harm or disadvantage", synonym: "Harmful", antonym: "Beneficial", essayTopic: "Health", essayUsage: "Excessive screen time exerts a detrimental influence on youth." },
+                { en: "Compelling", pos: "Adjective", ipa: "/kəmˈpel.ɪŋ/", collocations: "compelling argument", definition: "Convincingly interesting", synonym: "Persuasive", antonym: "Weak", essayTopic: "Public Policy", essayUsage: "There are compelling arguments in favor of public transport." },
+                { en: "Consolidate", pos: "Verb", ipa: "/kənˈsɒl.ɪ.deɪt/", collocations: "consolidate power", definition: "Combine into a single stronger whole", synonym: "Strengthen", antonym: "Weaken", essayTopic: "Economics", essayUsage: "Nations must consolidate their fiscal infrastructure." },
+                { en: "Imperative", pos: "Adjective", ipa: "/ɪmˈper.ə.tɪv/", collocations: "imperative that", definition: "Of vital importance; crucial", synonym: "Crucial", antonym: "Optional", essayTopic: "Global Health", essayUsage: "It is imperative that international bodies collaborate." },
+                { en: "Prevalent", pos: "Adjective", ipa: "/ˈprev.əl.ənt/", collocations: "widely prevalent", definition: "Widespread or commonly occurring", synonym: "Ubiquitous", antonym: "Rare", essayTopic: "Sociology", essayUsage: "Sedentary lifestyles are increasingly prevalent." }
             ]
         };
 
-        // Application State
+        let currentDeck = database.ielts_verbs;
         let selectedLeft = null;
-        let selectedRight = null;
-        let matchedPairs = [];
-        let moves = 0;
-        let streak = 0;
+        let matchedPairs = 0;
         let score = 0;
+        let streak = 0;
+        let timerSeconds = 0;
         let timerInterval = null;
-        let secondsElapsed = 0;
+        let soundEnabled = true;
         let currentModalWordData = null;
-        let audioEnabled = true;
 
-        // Speech Synthesis State
-        let britishVoices = { female: null, male: null };
-
-        // Web Audio Synthesizer Effects
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSynthSound(freq, duration, type = 'sine') {
-            if (!audioEnabled) return;
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
-        }
-
-        function playSoundEffect(type) {
-            if (type === 'click') playSynthSound(400, 0.08);
-            if (type === 'match') {
-                playSynthSound(523.25, 0.12);
-                setTimeout(() => playSynthSound(659.25, 0.15), 100);
-            }
-            if (type === 'error') {
-                playSynthSound(220, 0.15, 'sawtooth');
-            }
-            if (type === 'victory') {
-                [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
-                    setTimeout(() => playSynthSound(f, 0.2), i * 120);
-                });
-            }
-        }
-
-        // Voice Engine Setup
-        function initBritishVoices() {
-            if (!('speechSynthesis' in window)) return;
-            
-            const updateVoices = () => {
-                const voices = window.speechSynthesis.getVoices();
-                const ukVoices = voices.filter(v => v.lang.includes('en-GB') || v.name.includes('UK') || v.name.includes('British') || v.name.includes('United Kingdom'));
-                
-                britishVoices.female = ukVoices.find(v => v.name.toLowerCase().includes('female') || v.name.includes('Hazel') || v.name.includes('Serena') || v.name.includes('Sonia') || v.name.includes('Google UK English Female')) || ukVoices[0] || voices[0];
-                britishVoices.male = ukVoices.find(v => v.name.toLowerCase().includes('male') || v.name.includes('George') || v.name.includes('Daniel') || v.name.includes('Oliver') || v.name.includes('Google UK English Male')) || ukVoices[1] || ukVoices[0] || voices[0];
-            };
-
-            updateVoices();
-            window.speechSynthesis.onvoiceschanged = updateVoices;
-        }
-
-        function speakWord(text) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-GB';
-            utterance.rate = 0.88;
-
-            const selectedGender = document.getElementById('britishVoiceSelect').value;
-            const chosenVoice = britishVoices[selectedGender];
-            if (chosenVoice) {
-                utterance.voice = chosenVoice;
-            }
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function onVoiceChanged() {
-            playSoundEffect('click');
-        }
-
-        // Initialize Matching Grid
-        function resetGame() {
-            clearLines();
-            selectedLeft = null;
-            selectedRight = null;
-            matchedPairs = [];
-            moves = 0;
-            streak = 0;
-            score = 0;
-            secondsElapsed = 0;
-
-            document.getElementById('inlineCardContainer').classList.add('hidden');
-
-            clearInterval(timerInterval);
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerSeconds = 0;
             timerInterval = setInterval(() => {
-                secondsElapsed++;
-                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-                const secs = String(secondsElapsed % 60).padStart(2, '0');
-                document.getElementById('timerDisplay').innerText = `${mins}:${secs}`;
+                timerSeconds++;
+                let m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+                let s = (timerSeconds % 60).toString().padStart(2, '0');
+                document.getElementById('timerDisplay').innerText = `${m}:${s}`;
             }, 1000);
-
-            const categoryKey = document.getElementById('categorySelect').value;
-            const rawPairs = database[categoryKey];
-            const totalPairs = rawPairs.length;
-
-            document.getElementById('matchCount').innerText = '0';
-            document.getElementById('totalPairsCount').innerText = totalPairs;
-            document.getElementById('streakCount').innerText = '0x';
-            document.getElementById('scoreDisplay').innerText = '0';
-            document.getElementById('victoryOverlay').classList.add('hidden');
-
-            let leftList = rawPairs.map((item, index) => ({
-                id: index,
-                text: item.en,
-                pos: item.pos,
-                data: item
-            }));
-
-            let rightList = rawPairs.map((item, index) => ({
-                id: index,
-                text: item.definition,
-                data: item
-            }));
-
-            leftList.sort(() => Math.random() - 0.5);
-            rightList.sort(() => Math.random() - 0.5);
-
-            renderColumns(leftList, rightList);
         }
 
-        function renderColumns(leftList, rightList) {
+        function resetGame() {
+            matchedPairs = 0;
+            score = 0;
+            streak = 0;
+            document.getElementById('matchCount').innerText = 0;
+            document.getElementById('scoreDisplay').innerText = 0;
+            document.getElementById('streakCount').innerText = "0x";
+            document.getElementById('victoryOverlay').classList.add('hidden');
+            document.getElementById('inlineCardContainer').classList.add('hidden');
+            startTimer();
+            renderBoard();
+        }
+
+        function renderBoard() {
             const leftCol = document.getElementById('leftColumn');
             const rightCol = document.getElementById('rightColumn');
             leftCol.innerHTML = '';
             rightCol.innerHTML = '';
 
-            leftList.forEach(item => {
-                const el = document.createElement('div');
-                el.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
-                el.dataset.id = item.id;
-                el.onclick = () => {
-                    if (matchedPairs.includes(item.id)) {
-                        displayInlineStudyCard(item.data);
-                    } else {
-                        selectLeft(el, item);
-                    }
-                };
+            let shuffledWords = [...currentDeck].sort(() => Math.random() - 0.5);
+            let shuffledDefs = [...currentDeck].sort(() => Math.random() - 0.5);
 
-                el.innerHTML = `
-                    <div class="flex items-center gap-2.5">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400">${item.pos}</span>
-                        <span class="font-bold text-sm text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">${item.text}</span>
-                    </div>
-                    <button onclick="event.stopPropagation(); speakWord('${item.text}')" class="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-xs transition" title="Pronounce">
-                        🔊
-                    </button>
-                `;
-                leftCol.appendChild(el);
+            shuffledWords.forEach(item => {
+                let btn = document.createElement('button');
+                btn.className = "w-full p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-left font-bold text-sm shadow-sm hover:border-indigo-500 transition flex items-center justify-between";
+                btn.innerHTML = `<span>${item.en}</span> <span class="text-xs text-slate-400 font-normal">${item.pos}</span>`;
+                btn.onclick = () => selectWord(item, btn);
+                leftCol.appendChild(btn);
             });
 
-            rightList.forEach(item => {
-                const el = document.createElement('div');
-                el.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
-                el.dataset.id = item.id;
-                el.onclick = () => {
-                    if (matchedPairs.includes(item.id)) {
-                        displayInlineStudyCard(item.data);
-                    } else {
-                        selectRight(el, item);
-                    }
-                };
-
-                el.innerHTML = `
-                    <span class="font-medium text-xs text-slate-700 dark:text-slate-300 leading-relaxed">${item.text}</span>
-                `;
-                rightCol.appendChild(el);
+            shuffledDefs.forEach(item => {
+                let btn = document.createElement('button');
+                btn.className = "w-full p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-left text-xs font-semibold shadow-sm hover:border-emerald-500 transition";
+                btn.innerText = item.definition;
+                btn.onclick = () => selectDefinition(item, btn);
+                rightCol.appendChild(btn);
             });
+            document.getElementById('totalPairsCount').innerText = currentDeck.length;
         }
 
-        // Selection & Match Logic
-        function selectLeft(el, item) {
-            if (matchedPairs.includes(item.id)) return;
-            playSoundEffect('click');
-
-            document.querySelectorAll('.card-left').forEach(c => {
-                if (!matchedPairs.includes(parseInt(c.dataset.id))) {
-                    c.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
-                }
-            });
-
-            el.className = "card-left bg-indigo-50/50 dark:bg-indigo-950/40 border-2 border-indigo-600 dark:border-indigo-500 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-md flex items-center justify-between group";
-            selectedLeft = { el, item };
-
-            speakWord(item.text);
-            checkPairMatch();
+        function selectWord(item, btn) {
+            document.querySelectorAll('#leftColumn button').forEach(b => b.classList.remove('ring-2', 'ring-indigo-500'));
+            btn.classList.add('ring-2', 'ring-indigo-500');
+            selectedLeft = item;
         }
 
-        function selectRight(el, item) {
-            if (matchedPairs.includes(item.id)) return;
-            playSoundEffect('click');
-
-            document.querySelectorAll('.card-right').forEach(c => {
-                if (!matchedPairs.includes(parseInt(c.dataset.id))) {
-                    c.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
-                }
-            });
-
-            el.className = "card-right bg-indigo-50/50 dark:bg-indigo-950/40 border-2 border-indigo-600 dark:border-indigo-500 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-md flex items-center justify-between group";
-            selectedRight = { el, item };
-
-            checkPairMatch();
-        }
-
-        function checkPairMatch() {
-            if (!selectedLeft || !selectedRight) return;
-
-            moves++;
-            const isMatch = selectedLeft.item.id === selectedRight.item.id;
-            const categoryKey = document.getElementById('categorySelect').value;
-            const totalPairs = database[categoryKey].length;
-
-            if (isMatch) {
-                playSoundEffect('match');
-                matchedPairs.push(selectedLeft.item.id);
+        function selectDefinition(item, btn) {
+            if (!selectedLeft) return;
+            if (selectedLeft.en === item.en) {
+                // Correct match
+                btn.className = "w-full p-4 bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow transition";
+                matchedPairs++;
                 streak++;
                 score += 100 * streak;
-
-                document.getElementById('matchCount').innerText = matchedPairs.length;
-                document.getElementById('streakCount').innerText = `${streak}x`;
+                document.getElementById('matchCount').innerText = matchedPairs;
                 document.getElementById('scoreDisplay').innerText = score;
-
-                // Lock matched styling
-                selectedLeft.el.className = "card-left bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-500 p-4 rounded-xl cursor-pointer opacity-90 flex items-center justify-between";
-                selectedRight.el.className = "card-right bg-emerald-50 dark:bg-emerald-950/30 border-2 border-emerald-500 p-4 rounded-xl cursor-pointer opacity-90 flex items-center justify-between";
-
-                // Draw connecting SVG line
-                drawConnectingLine(selectedLeft.el, selectedRight.el);
-
-                // Show Details Below
-                displayInlineStudyCard(selectedLeft.item.data);
-
+                document.getElementById('streakCount').innerText = `${streak}x`;
+                
+                showInlineStudyCard(item);
                 selectedLeft = null;
-                selectedRight = null;
-
-                // Victory Check
-                if (matchedPairs.length === totalPairs) {
+                if (matchedPairs === currentDeck.length) {
                     clearInterval(timerInterval);
-                    setTimeout(() => {
-                        playSoundEffect('victory');
-                        document.getElementById('finalScore').innerText = score;
-                        document.getElementById('finalTime').innerText = document.getElementById('timerDisplay').innerText;
-                        document.getElementById('victoryOverlay').classList.remove('hidden');
-                    }, 800);
+                    document.getElementById('victoryOverlay').classList.remove('hidden');
                 }
             } else {
-                playSoundEffect('error');
                 streak = 0;
-                document.getElementById('streakCount').innerText = '0x';
-
-                selectedLeft.el.classList.add('shake');
-                selectedRight.el.classList.add('shake');
-
-                setTimeout(() => {
-                    if (selectedLeft) selectedLeft.el.className = "card-left bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
-                    if (selectedRight) selectedRight.el.className = "card-right bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 p-4 rounded-xl cursor-pointer transition-all duration-200 shadow-sm flex items-center justify-between group";
-                    selectedLeft = null;
-                    selectedRight = null;
-                }, 500);
+                document.getElementById('streakCount').innerText = "0x";
+                btn.classList.add('shake', 'bg-red-500/10', 'border-red-500');
+                setTimeout(() => btn.classList.remove('shake', 'bg-red-500/10', 'border-red-500'), 500);
             }
         }
 
-        // Display Inline Card below Grid
-        function displayInlineStudyCard(data) {
-            currentModalWordData = data;
-            document.getElementById('cardWord').innerText = data.en;
-            document.getElementById('cardIpa').innerText = data.ipa;
-            document.getElementById('cardPos').innerText = data.pos.toUpperCase();
-            document.getElementById('cardMeaning').innerText = data.definition;
-            document.getElementById('cardSynonym').innerText = data.synonym;
-            document.getElementById('cardAntonym').innerText = data.antonym;
-            document.getElementById('cardCollocations').innerText = data.collocations;
-            document.getElementById('cardEssayTopic').innerText = data.essayTopic;
-            document.getElementById('cardEssayUsage').innerHTML = `"${data.essayUsage.replace(data.en, `<strong class="text-emerald-600 dark:text-emerald-400">${data.en}</strong>`)}"`;
-
-            const container = document.getElementById('inlineCardContainer');
-            container.classList.remove('hidden');
-            
-            // Smooth auto-scroll to card if out of view
-            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        function showInlineStudyCard(item) {
+            currentModalWordData = item;
+            document.getElementById('inlineCardContainer').classList.remove('hidden');
+            document.getElementById('cardWord').innerText = item.en;
+            document.getElementById('cardPos').innerText = item.pos;
+            document.getElementById('cardIpa').innerText = item.ipa;
+            document.getElementById('cardMeaning').innerText = item.definition;
+            document.getElementById('cardSynonym').innerText = item.synonym;
+            document.getElementById('cardAntonym').innerText = item.antonym;
+            document.getElementById('cardCollocations').innerText = item.collocations;
+            document.getElementById('cardEssayTopic').innerText = item.essayTopic;
+            document.getElementById('cardEssayUsage').innerHTML = `"${item.essayUsage}"`;
         }
 
-        // SVG Connector Line Drawing
-        function drawConnectingLine(leftEl, rightEl) {
-            const svg = document.getElementById('svgOverlay');
-            const leftRect = leftEl.getBoundingClientRect();
-            const rightRect = rightEl.getBoundingClientRect();
-
-            const x1 = leftRect.right;
-            const y1 = leftRect.top + leftRect.height / 2 + window.scrollY;
-            const x2 = rightRect.left;
-            const y2 = rightRect.top + rightRect.height / 2 + window.scrollY;
-
-            const dx = (x2 - x1) * 0.5;
-            const pathData = `M ${x1} ${y1} C ${x1 + dx} ${y1}, ${x2 - dx} ${y2}, ${x2} ${y2}`;
-
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            path.setAttribute('d', pathData);
-            path.setAttribute('stroke', '#10b981');
-            path.setAttribute('stroke-width', '3');
-            path.setAttribute('fill', 'none');
-            path.setAttribute('stroke-linecap', 'round');
-
-            svg.appendChild(path);
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                let utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-GB';
+                window.speechSynthesis.speak(utterance);
+            }
         }
 
-        function clearLines() {
-            document.getElementById('svgOverlay').innerHTML = '';
-        }
+        function toggleAudio() { soundEnabled = !soundEnabled; document.getElementById('audioToggleBtn').innerText = soundEnabled ? '🔊' : '🔇'; }
+        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
+        function getHint() { alert("Match academic verbs on the left with their correct definitions on the right!"); }
 
-        // Hint System
-        function getHint() {
-            const unmatchedLeft = Array.from(document.querySelectorAll('.card-left')).filter(c => !matchedPairs.includes(parseInt(c.dataset.id)));
-            if (unmatchedLeft.length === 0) return;
-
-            playSoundEffect('click');
-            const target = unmatchedLeft[0];
-            const targetId = target.dataset.id;
-            const matchingRight = Array.from(document.querySelectorAll('.card-right')).find(c => c.dataset.id === targetId);
-
-            target.classList.add('ring-4', 'ring-amber-400');
-            matchingRight.classList.add('ring-4', 'ring-amber-400');
-
-            setTimeout(() => {
-                target.classList.remove('ring-4', 'ring-amber-400');
-                matchingRight.classList.remove('ring-4', 'ring-amber-400');
-            }, 1200);
-        }
-
-        // Theme & Audio Settings
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
-        }
-
-        function toggleAudio() {
-            audioEnabled = !audioEnabled;
-            document.getElementById('audioToggleBtn').innerText = audioEnabled ? '🔊' : '🔇';
-        }
-
-        window.onresize = () => clearLines();
-
-        // Bootstrapping
+        // Initialize App on Load
         window.onload = () => {
-            initBritishVoices();
+            loadProfile();
             resetGame();
         };
     </script>
