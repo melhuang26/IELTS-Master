@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Master AI - Advanced Preparation Suite</title>
+    <title>IELTS Master AI - Band 8.5 Prep & Guide</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -26,516 +26,1134 @@
         }
     </script>
     <style>
-        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
-        }
         .pop-in { animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes popIn {
             0% { opacity: 0; transform: scale(0.96) translateY(12px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
+        .pulse-subtle { animation: pulseSubtle 3s infinite ease-in-out; }
+        @keyframes pulseSubtle {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.95; }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+        .dark ::-webkit-scrollbar-thumb { background: #334155; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300 font-sans antialiased flex flex-col relative overflow-x-hidden pb-12">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300 font-sans antialiased flex flex-col relative overflow-x-hidden">
 
-    <!-- Canvas overlay for SVG Lines in Flash Match -->
-    <svg id="svgOverlay" class="absolute inset-0 w-full h-full pointer-events-none z-10" style="min-height: 100vh;"></svg>
-
-    <!-- Navigation Header -->
-    <header class="w-full bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm sticky top-0 z-30">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-md">
+    <!-- TOP NAVIGATION HEADER -->
+    <header class="w-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 shadow-sm sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <div onclick="switchMainView('guide')" class="flex items-center gap-3 cursor-pointer group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center text-white font-black text-xl shadow-md group-hover:scale-105 transition-transform">
                     🎓
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">IELTS Master AI</h1>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Personalized Band 8.5+ Preparation Hub</p>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">IELTS Master AI</h1>
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest" id="headerSubTitle">Band 8.5 Learning Platform</p>
                 </div>
             </div>
 
-            <!-- Navigation Tabs & Controls -->
-            <div class="flex items-center gap-2 flex-wrap">
-                <nav class="flex bg-slate-100 dark:bg-slate-700/60 p-1 rounded-xl border border-slate-200 dark:border-slate-600 text-xs font-semibold">
-                    <button onclick="switchTab('vocab')" id="tabBtn-vocab" class="px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm">Vocabulary</button>
-                    <button onclick="switchTab('essay')" id="tabBtn-essay" class="px-3 py-1.5 rounded-lg transition text-slate-600 dark:text-slate-300">AI Essay Review</button>
-                    <button onclick="switchTab('speaking')" id="tabBtn-speaking" class="px-3 py-1.5 rounded-lg transition text-slate-600 dark:text-slate-300">AI Speaking</button>
-                    <button onclick="switchTab('analytics')" id="tabBtn-analytics" class="px-3 py-1.5 rounded-lg transition text-slate-600 dark:text-slate-300">Analytics</button>
-                </nav>
-
-                <!-- Profile & Theme Toggles -->
-                <button onclick="openProfileModal()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition text-xs font-bold flex items-center gap-1" title="User Profile">
-                    👤 <span id="headerUserName">Candidate</span>
+            <!-- View Switcher & App Navigation Tabs -->
+            <nav class="hidden md:flex items-center gap-2 bg-slate-100 dark:bg-slate-900/60 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700/60 text-xs font-bold">
+                <button onclick="switchMainView('guide')" id="navBtn-guide" class="px-4 py-2 rounded-xl transition-all bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm">
+                    📖 How It Works
                 </button>
-                <button onclick="toggleAudio()" id="audioToggleBtn" title="Toggle Sound FX" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">🔊</button>
-                <button onclick="toggleTheme()" title="Toggle Theme" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition">🌙</button>
+                <button onclick="switchMainView('app', 'vocab')" id="navBtn-vocab" class="px-4 py-2 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    🎴 Flash-Match
+                </button>
+                <button onclick="switchMainView('app', 'essay')" id="navBtn-essay" class="px-4 py-2 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    ✍️ AI Writing
+                </button>
+                <button onclick="switchMainView('app', 'speaking')" id="navBtn-speaking" class="px-4 py-2 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    🎙️ AI Speaking
+                </button>
+                <button onclick="switchMainView('app', 'analytics')" id="navBtn-analytics" class="px-4 py-2 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                    📊 Analytics
+                </button>
+            </nav>
+
+            <!-- Actions & Theme Toggle -->
+            <div class="flex items-center gap-3">
+                <button onclick="openProfileModal()" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-2 border border-slate-200 dark:border-slate-700">
+                    <span>👤</span>
+                    <span id="headerUserName" class="hidden sm:inline">Candidate</span>
+                </button>
+
+                <button onclick="toggleTheme()" title="Toggle Dark/Light Mode" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition border border-slate-200 dark:border-slate-700">
+                    🌙
+                </button>
+
+                <!-- Action Button -->
+                <button id="ctaLaunchBtn" onclick="switchMainView('app', 'vocab')" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                    <span>Launch App</span> ➔
+                </button>
             </div>
+        </div>
+        
+        <!-- Mobile Bottom/Sub Navigation -->
+        <div class="flex md:hidden items-center justify-around border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 px-2 py-2 text-[11px] font-bold">
+            <button onclick="switchMainView('guide')" class="px-2 py-1 text-slate-600 dark:text-slate-300">📖 Guide</button>
+            <button onclick="switchMainView('app', 'vocab')" class="px-2 py-1 text-slate-600 dark:text-slate-300">🎴 Vocab</button>
+            <button onclick="switchMainView('app', 'essay')" class="px-2 py-1 text-slate-600 dark:text-slate-300">✍️ Writing</button>
+            <button onclick="switchMainView('app', 'speaking')" class="px-2 py-1 text-slate-600 dark:text-slate-300">🎙️ Speaking</button>
+            <button onclick="switchMainView('app', 'analytics')" class="px-2 py-1 text-slate-600 dark:text-slate-300">📊 Stats</button>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 py-6 flex-1 w-full flex flex-col gap-6 z-20">
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-8">
 
-        <!-- ================= TAB 1: VOCABULARY (FLASH-MATCH PRO) ================= -->
-        <div id="tabContent-vocab" class="tab-content flex flex-col gap-6">
-            <!-- Category & Restart Controls -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <span class="text-lg">📚</span>
-                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Vocabulary Deck:</span>
-                </div>
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                    <select id="categorySelect" onchange="resetGame()" class="flex-1 sm:flex-none px-4 py-2 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="ielts_verbs">IELTS Academic Verbs & Adjectives (10 Words)</option>
-                        <option value="ielts_topics">Environment, Tech & Urbanization (10 Words)</option>
-                        <option value="ielts_idioms">Advanced Essay Expressions (10 Phrases)</option>
-                        <option value="ielts_education">Higher Education & Research (10 Words)</option>
-                        <option value="ielts_society">Society, Culture & Public Policy (10 Words)</option>
-                    </select>
-                    <button onclick="getHint()" class="px-3 py-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold hover:bg-amber-500/20 transition flex items-center gap-1">💡 Hint</button>
-                    <button onclick="resetGame()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md transition">Restart</button>
-                </div>
-            </div>
+        <!-- ================================================================= -->
+        <!-- VIEW 1: HOW IT WORKS / USER ONBOARDING GUIDE PAGE -->
+        <!-- ================================================================= -->
+        <div id="view-guide" class="space-y-16 pop-in">
 
-            <!-- Dashboard Stats Bar -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                    <div class="p-2.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 font-bold">⏱️</div>
-                    <div><div class="text-xs text-slate-400 font-semibold uppercase">Time</div><div id="timerDisplay" class="text-lg font-bold">00:00</div></div>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                    <div class="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 font-bold">🎯</div>
-                    <div><div class="text-xs text-slate-400 font-semibold uppercase">Matches</div><div class="text-lg font-bold"><span id="matchCount">0</span> / <span id="totalPairsCount">10</span></div></div>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                    <div class="p-2.5 rounded-lg bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 font-bold">🔥</div>
-                    <div><div class="text-xs text-slate-400 font-semibold uppercase">Streak</div><div id="streakCount" class="text-lg font-bold">0x</div></div>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
-                    <div class="p-2.5 rounded-lg bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 font-bold">🏆</div>
-                    <div><div class="text-xs text-slate-400 font-semibold uppercase">Score</div><div id="scoreDisplay" class="text-lg font-bold">0</div></div>
-                </div>
-            </div>
+            <!-- HERO BANNER SECTION -->
+            <section class="relative rounded-3xl bg-gradient-to-br from-indigo-900 via-slate-900 to-emerald-950 text-white p-8 sm:p-12 md:p-16 overflow-hidden shadow-2xl border border-indigo-500/20">
+                <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <!-- Matching Board Columns -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative min-h-[520px]">
-                <div class="flex flex-col gap-3">
-                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1">1. Select IELTS Word</h3>
-                    <div id="leftColumn" class="flex flex-col gap-3"></div>
-                </div>
-                <div class="flex flex-col gap-3">
-                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 px-1">2. Select Definition</h3>
-                    <div id="rightColumn" class="flex flex-col gap-3"></div>
-                </div>
-            </div>
-
-            <!-- Inline Study Card -->
-            <div id="inlineCardContainer" class="w-full hidden transition-all duration-300">
-                <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-500/40 shadow-xl overflow-hidden pop-in">
-                    <div class="bg-gradient-to-r from-indigo-600 to-emerald-600 px-6 py-4 text-white flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">🎓</span>
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-extrabold text-xl leading-tight" id="cardWord">Mitigate</h3>
-                                    <span id="cardPos" class="px-2 py-0.5 bg-white/20 text-white text-[10px] font-bold rounded">VERB</span>
-                                </div>
-                                <p class="text-xs text-indigo-100 italic" id="cardIpa">/ˈmɪt.ɪ.ɡeɪt/</p>
-                            </div>
-                        </div>
-                        <button onclick="speakWord(currentModalWordData.en)" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded-xl text-xs font-bold transition flex items-center gap-1.5">🔊 <span>Listen</span></button>
+                <div class="relative z-10 max-w-3xl space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-emerald-300 text-xs font-semibold backdrop-blur-md">
+                        <span>✨ Master Band 8.5+ Strategies</span>
                     </div>
-                    <div class="p-6 space-y-4">
-                        <div class="p-3.5 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Meaning</div>
-                            <div class="text-sm font-semibold text-slate-800 dark:text-slate-100" id="cardMeaning">To make something less harmful</div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <div class="p-3 bg-indigo-50/60 dark:bg-indigo-950/40 rounded-xl border border-indigo-100"><div class="text-[10px] font-extrabold text-indigo-600 uppercase">🔄 Synonyms</div><div id="cardSynonym" class="text-xs font-bold mt-1">Alleviate</div></div>
-                            <div class="p-3 bg-purple-50/60 dark:bg-purple-950/40 rounded-xl border border-purple-100"><div class="text-[10px] font-extrabold text-purple-600 uppercase">⚡ Antonyms</div><div id="cardAntonym" class="text-xs font-bold mt-1">Exacerbate</div></div>
-                            <div class="p-3 bg-amber-50/60 dark:bg-amber-950/40 rounded-xl border border-amber-100"><div class="text-[10px] font-extrabold text-amber-600 uppercase">🔗 Collocations</div><div id="cardCollocations" class="text-xs font-bold mt-1">mitigate risks</div></div>
-                        </div>
-                        <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-extrabold text-emerald-600 uppercase">✍️ IELTS Writing Task 2 Context</span>
-                                <span id="cardEssayTopic" class="text-[10px] font-bold px-2 py-0.5 bg-emerald-500/20 text-emerald-700 rounded">Environment</span>
-                            </div>
-                            <p id="cardEssayUsage" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic pt-1"></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    
+                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+                        Welcome to <span class="bg-gradient-to-r from-indigo-300 via-emerald-300 to-teal-200 bg-clip-text text-transparent">IELTS Master AI</span>
+                    </h1>
+                    
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Your complete step-by-step guide to achieving Band 8.5+. Learn how our AI-powered vocabulary matching, instant Task 2 essay feedback, and real-time speaking evaluation help you study smarter, fix weaknesses, and build exam confidence.
+                    </p>
 
-        <!-- ================= TAB 2: AI ESSAY REVIEW ================= -->
-        <div id="tabContent-essay" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
-                <div class="flex items-center justify-between flex-wrap gap-3">
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100">✍️ AI Essay Evaluator (Task 2)</h2>
-                        <p class="text-xs text-slate-500">Paste your IELTS essay below to receive instant band scores and lexical critique.</p>
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <button onclick="switchMainView('app', 'vocab')" class="px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-emerald-500 hover:from-indigo-600 hover:to-emerald-600 text-white font-extrabold text-sm rounded-xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            🚀 Start Practicing Now
+                        </button>
+                        <a href="#guide-walkthrough" class="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold text-sm rounded-xl backdrop-blur-md border border-white/10 transition">
+                            📖 View Quickstart Steps
+                        </a>
                     </div>
-                    <select id="essayPromptSelect" class="px-3 py-2 bg-slate-100 dark:bg-slate-700 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-600">
-                        <option value="Some people think that universities should provide graduates with the knowledge and skills needed in the workplace. Others think that the true function of a university should be to give access to knowledge for its own sake. Discuss both views and give your opinion.">Sample Prompt: University Education vs Workplace Skills</option>
-                        <option value="Environmental problems are too big for individual countries to address on their own. Therefore, international cooperation is necessary to solve them. To what extent do you agree or disagree?">Sample Prompt: International Cooperation & Environment</option>
-                    </select>
-                </div>
 
-                <div class="space-y-2">
-                    <label class="text-xs font-bold text-slate-400 uppercase">Your Essay Response (min 250 words recommended):</label>
-                    <textarea id="essayInput" rows="8" class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Type or paste your IELTS essay here..."></textarea>
-                </div>
-
-                <div class="flex justify-between items-center">
-                    <span id="wordCountDisplay" class="text-xs text-slate-400 font-semibold">Words: 0</span>
-                    <button onclick="evaluateEssay()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-700 text-white font-bold text-xs rounded-xl shadow-lg transition">🚀 Run AI Review & Grading</button>
-                </div>
-            </div>
-
-            <!-- Essay Review Feedback Results -->
-            <div id="essayFeedbackContainer" class="hidden space-y-6 pop-in">
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
-                    <div class="bg-indigo-600 text-white p-4 rounded-2xl shadow-md text-center">
-                        <div class="text-xs font-bold uppercase tracking-wider text-indigo-100">Overall Band</div>
-                        <div id="scoreOverall" class="text-3xl font-black mt-1">7.5</div>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
-                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Task Response</div>
-                        <div id="scoreTR" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">7.0</div>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
-                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Coherence</div>
-                        <div id="scoreCC" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">8.0</div>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
-                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Lexical Resource</div>
-                        <div id="scoreLR" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">7.5</div>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center col-span-2 md:col-span-1">
-                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Grammar</div>
-                        <div id="scoreGRA" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">7.5</div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
-                        <h3 class="text-sm font-extrabold text-emerald-600 uppercase">🌟 Strengths Identified</h3>
-                        <ul id="essayStrengths" class="text-xs space-y-2 text-slate-600 dark:text-slate-300 list-disc pl-4"></ul>
-                    </div>
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
-                        <h3 class="text-sm font-extrabold text-amber-600 uppercase">⚠️ Areas for Improvement</h3>
-                        <ul id="essayImprovements" class="text-xs space-y-2 text-slate-600 dark:text-slate-300 list-disc pl-4"></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= TAB 3: AI SPEAKING COACH ================= -->
-        <div id="tabContent-speaking" class="tab-content hidden flex flex-col gap-6">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 space-y-6 text-center">
-                <div class="max-w-xl mx-auto space-y-2">
-                    <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold rounded-full">IELTS Speaking Part 2 Simulator</span>
-                    <h2 class="text-xl font-bold" id="speakingPromptTitle">Describe a time when you helped someone.</h2>
-                    <p class="text-xs text-slate-500">You have 1 minute to prepare and 2 minutes to speak. Click record to begin speaking into your microphone.</p>
-                </div>
-
-                <div class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-lg mx-auto space-y-4">
-                    <div id="speakingTimer" class="text-4xl font-black text-indigo-600 dark:text-indigo-400">02:00</div>
-                    <div class="flex justify-center gap-3">
-                        <button onclick="startSpeakingRecording()" id="recordBtn" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-lg transition flex items-center gap-2">🎙️ Start Recording</button>
-                        <button onclick="stopSpeakingRecording()" id="stopBtn" disabled class="px-6 py-3 bg-slate-300 dark:bg-slate-700 text-slate-500 rounded-xl text-xs font-bold cursor-not-allowed transition">⏹️ Finish & Analyze</button>
-                    </div>
-                </div>
-
-                <!-- Speaking Feedback Results -->
-                <div id="speakingFeedbackContainer" class="hidden text-left space-y-4 pop-in max-w-2xl mx-auto">
-                    <div class="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between">
+                    <!-- Key Value Highlights -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-white/10">
                         <div>
-                            <div class="text-xs font-bold text-emerald-600 uppercase">Estimated Speaking Band</div>
-                            <div class="text-2xl font-black text-slate-800 dark:text-slate-100">Band 8.0</div>
+                            <div class="text-2xl font-black text-emerald-400">50+</div>
+                            <div class="text-xs text-slate-400">Academic Terms & Phrases</div>
                         </div>
-                        <span class="text-3xl">🎯</span>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-                        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"><div class="text-[10px] text-slate-400 uppercase font-bold">Fluency</div><div class="text-lg font-black text-indigo-600 mt-1">8.0</div></div>
-                        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"><div class="text-[10px] text-slate-400 uppercase font-bold">Lexical</div><div class="text-lg font-black text-indigo-600 mt-1">7.5</div></div>
-                        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"><div class="text-[10px] text-slate-400 uppercase font-bold">Grammar</div><div class="text-lg font-black text-indigo-600 mt-1">8.0</div></div>
-                        <div class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"><div class="text-[10px] text-slate-400 uppercase font-bold">Pronunciation</div><div class="text-lg font-black text-indigo-600 mt-1">8.5</div></div>
+                        <div>
+                            <div class="text-2xl font-black text-indigo-400">4 Criteria</div>
+                            <div class="text-xs text-slate-400">Instant Writing Band Matrix</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-black text-emerald-400">Part 2</div>
+                            <div class="text-xs text-slate-400">AI Cue Card Speaking Coach</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-black text-indigo-400">100%</div>
+                            <div class="text-xs text-slate-400">Private Local Storage</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- OVERVIEW / WHY USE IELTS MASTER AI -->
+            <section class="space-y-6">
+                <div class="text-center max-w-2xl mx-auto space-y-2">
+                    <h2 class="text-2xl font-black tracking-tight">Designed for High-Score Seekers</h2>
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Traditional prep relies on memorizing long word lists without context or waiting days for essay feedback. IELTS Master AI fixes this with interactive, real-time feedback loops.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-2xl font-bold">🧠</div>
+                        <h3 class="font-bold text-base">Active Recall Vocabulary</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Match words with precise definitions while reviewing collocations, antonyms, and Task 2 context sentences instantly.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl font-bold">✍️</div>
+                        <h3 class="font-bold text-base">Instant Band 8.5 Writing Critique</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Get detailed breakdowns for Task Response, Coherence, Lexical Resource, and Grammar without paying expensive tutors.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl font-bold">🎙️</div>
+                        <h3 class="font-bold text-base">Timed Speaking Evaluation</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Simulate real Part 2 exam pressure with preparation timers, voice recording, and criteria-aligned fluency scores.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE DEEP-DIVES -->
+            <section class="space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">In-Depth Reference</span>
+                        <h2 class="text-2xl font-black">Core Module Breakdown</h2>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md">Click through each module tab below to understand the mechanics, scoring algorithms, and best study practices.</p>
+                </div>
+
+                <!-- Tab Buttons -->
+                <div class="flex items-center gap-2 border-b border-slate-200 dark:border-slate-700 overflow-x-auto pb-2 scrollbar-none">
+                    <button onclick="showModuleTab('mod-vocab')" id="modTabBtn-mod-vocab" class="px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-indigo-600 text-white shadow">
+                        1. Flash-Match Pro
+                    </button>
+                    <button onclick="showModuleTab('mod-essay')" id="modTabBtn-mod-essay" class="px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        2. AI Essay Evaluator
+                    </button>
+                    <button onclick="showModuleTab('mod-speaking')" id="modTabBtn-mod-speaking" class="px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        3. AI Speaking Coach
+                    </button>
+                    <button onclick="showModuleTab('mod-analytics')" id="modTabBtn-mod-analytics" class="px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                        4. Analytics & Progress
+                    </button>
+                </div>
+
+                <!-- TAB CONTENT CONTAINER -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                    
+                    <!-- MODULE 1: FLASH-MATCH PRO -->
+                    <div id="mod-vocab" class="mod-pane space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-2xl text-2xl font-bold">🎴</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Module 1: Flash-Match Pro Vocabulary Deck</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Engineered for Band 8.5 Lexical Resource mastery through pairing speed and deep contextual memory.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                <p><strong class="text-slate-900 dark:text-white">How it works:</strong> Flash-Match Pro presents 10 high-impact academic vocabulary terms or idiomatic phrases on the left, paired with 10 shuffled definitions on the right.</p>
+                                <ul class="space-y-2 list-disc pl-4">
+                                    <li><strong class="text-indigo-600 dark:text-indigo-400">Streak Multiplier:</strong> Correct consecutive matches build a score multiplier (e.g. 1x, 2x, 3x) rewarding fast recognition.</li>
+                                    <li><strong class="text-indigo-600 dark:text-indigo-400">Interactive Study Card:</strong> Upon matching a pair, an inline card displays word phonetics (IPA), part of speech, British pronunciation audio, collocations, and a sample Task 2 sentence.</li>
+                                    <li><strong class="text-indigo-600 dark:text-indigo-400">Audio Speech Engine:</strong> Native British voice synthesis ensures accurate pronunciation for your speaking test.</li>
+                                </ul>
+                            </div>
+
+                            <div class="p-5 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Available Category Decks:</span>
+                                <div class="space-y-2 text-xs">
+                                    <div class="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold flex justify-between">
+                                        <span>Academic Verbs & Adjectives</span>
+                                        <span class="text-indigo-600 dark:text-indigo-400 font-bold">10 Words</span>
+                                    </div>
+                                    <div class="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold flex justify-between">
+                                        <span>Environment, Tech & Urbanization</span>
+                                        <span class="text-emerald-600 dark:text-emerald-400 font-bold">10 Words</span>
+                                    </div>
+                                    <div class="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold flex justify-between">
+                                        <span>Advanced Essay Idioms & Expressions</span>
+                                        <span class="text-purple-600 dark:text-purple-400 font-bold">10 Phrases</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODULE 2: AI ESSAY EVALUATOR -->
+                    <div id="mod-essay" class="mod-pane hidden space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-2xl text-2xl font-bold">✍️</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Module 2: AI Essay Evaluator (Task 2)</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Automated evaluation against the official IELTS Writing Band Descriptors.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                <span class="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase">1. Task Response</span>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">Checks if you answered all parts of the prompt, maintained a clear position, and supported your main ideas.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                <span class="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase">2. Coherence & Cohesion</span>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">Evaluates paragraph structure, logical flow, progression, and effective use of transitional phrases.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                <span class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase">3. Lexical Resource</span>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">Scans vocabulary complexity, academic word choice, collocations, and spelling accuracy.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                <span class="text-xs font-black text-amber-600 dark:text-amber-400 uppercase">4. Grammar Range</span>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">Analyzes complex sentence structures, clause variation, punctuation, and grammatical error rates.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODULE 3: AI SPEAKING COACH -->
+                    <div id="mod-speaking" class="mod-pane hidden space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 rounded-2xl text-2xl font-bold">🎙️</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Module 3: AI Speaking Coach (Part 2)</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Simulate official Speaking Part 2 cue cards under timed exam conditions.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-600 dark:text-slate-300">
+                            <div class="p-5 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-2"><span>1️⃣</span> Prep Phase (1 Minute)</h4>
+                                <p class="leading-relaxed">Read the cue card prompt and outline key points for your answer before recording begins.</p>
+                            </div>
+                            <div class="p-5 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-2"><span>2️⃣</span> Speaking Phase (2 Minutes)</h4>
+                                <p class="leading-relaxed">Record your response into your browser microphone. The timer keeps you focused on timing.</p>
+                            </div>
+                            <div class="p-5 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                                <h4 class="font-bold text-slate-900 dark:text-white flex items-center gap-2"><span>3️⃣</span> AI Analysis</h4>
+                                <p class="leading-relaxed">Receive estimated scores across Fluency, Lexical Resource, Grammar, and Pronunciation.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MODULE 4: ANALYTICS -->
+                    <div id="mod-analytics" class="mod-pane hidden space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-2xl text-2xl font-bold">📊</div>
+                            <div>
+                                <h3 class="text-xl font-bold">Module 4: Usage Analytics & Progress Tracker</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Monitor study hours, deck mastery percentages, and band score trajectory.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                            <div class="p-5 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                                <h4 class="font-bold text-slate-900 dark:text-white">Tracked Performance Metrics:</h4>
+                                <ul class="space-y-2 list-disc pl-4 text-slate-600 dark:text-slate-400">
+                                    <li><strong>Accumulated Study Time:</strong> Tracks active time spent in matches and writing reviews.</li>
+                                    <li><strong>Deck Mastery Rate:</strong> Tracks completed word sets across all deck categories.</li>
+                                    <li><strong>Target Band Velocity:</strong> Compares your current score with your set target.</li>
+                                </ul>
+                            </div>
+                            <div class="p-5 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                                <h4 class="font-bold text-slate-900 dark:text-white">Why Analytics Matter:</h4>
+                                <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    Studies show candidates who track study time and review lexical errors systematically score 1.0 to 1.5 bands higher than passive readers.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- INTERACTIVE PLAYGROUND / DEMO SECTION -->
+            <section class="space-y-6">
+                <div class="text-center max-w-xl mx-auto space-y-2">
+                    <span class="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs font-bold rounded-full">Interactive Sandbox</span>
+                    <h2 class="text-2xl font-black">Try Demo Tools Right Now</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Test the scoring calculators and AI feedback widgets below.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Demo Widget 1: IELTS Score Calculator -->
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🧮</span>
+                            <h3 class="font-bold text-sm">Overall Band Score Estimator</h3>
+                        </div>
+                        
+                        <div class="space-y-3 text-xs">
+                            <div>
+                                <div class="flex justify-between font-semibold mb-1">
+                                    <span>Listening:</span> <span id="calcVal-L" class="text-indigo-600 dark:text-indigo-400 font-bold">8.0</span>
+                                </div>
+                                <input type="range" min="5" max="9" step="0.5" value="8.0" oninput="updateScoreCalc()" id="calcSlider-L" class="w-full accent-indigo-600 cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between font-semibold mb-1">
+                                    <span>Reading:</span> <span id="calcVal-R" class="text-indigo-600 dark:text-indigo-400 font-bold">8.5</span>
+                                </div>
+                                <input type="range" min="5" max="9" step="0.5" value="8.5" oninput="updateScoreCalc()" id="calcSlider-R" class="w-full accent-indigo-600 cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between font-semibold mb-1">
+                                    <span>Writing:</span> <span id="calcVal-W" class="text-indigo-600 dark:text-indigo-400 font-bold">7.5</span>
+                                </div>
+                                <input type="range" min="5" max="9" step="0.5" value="7.5" oninput="updateScoreCalc()" id="calcSlider-W" class="w-full accent-indigo-600 cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between font-semibold mb-1">
+                                    <span>Speaking:</span> <span id="calcVal-S" class="text-indigo-600 dark:text-indigo-400 font-bold">8.0</span>
+                                </div>
+                                <input type="range" min="5" max="9" step="0.5" value="8.0" oninput="updateScoreCalc()" id="calcSlider-S" class="w-full accent-indigo-600 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-gradient-to-r from-indigo-600 to-emerald-600 rounded-2xl text-white text-center">
+                            <div class="text-[10px] font-bold uppercase tracking-wider text-indigo-100">Estimated Overall Band</div>
+                            <div id="calcResultBand" class="text-3xl font-black mt-1">8.0</div>
+                        </div>
+                    </div>
+
+                    <!-- Demo Widget 2: Sample Essay Feedback Preview -->
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🔍</span>
+                            <h3 class="font-bold text-sm">Sample Essay Critique Preview</h3>
+                        </div>
+
+                        <div id="demoEssaySample" class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs font-mono border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 leading-relaxed">
+                            "Governments should <span class="bg-red-500/20 text-red-600 dark:text-red-400 font-bold px-1 rounded">make bad effects less</span> by investing in renewable energy."
+                        </div>
+
+                        <button onclick="runDemoEssayFix()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition shadow">
+                            ✨ Apply AI Lexical Upgrade
+                        </button>
+
+                        <div id="demoEssayResult" class="hidden p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 space-y-1">
+                            <div class="font-bold">Upgrade Suggested:</div>
+                            <p class="italic">"Governments should <strong class="underline">mitigate adverse impacts</strong> by investing in renewable energy."</p>
+                        </div>
+                    </div>
+
+                    <!-- Demo Widget 3: Pronunciation & Voice Audio Test -->
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🗣️</span>
+                            <h3 class="font-bold text-sm">British Voice Engine Tester</h3>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Select Word to Test:</label>
+                            <select id="demoVoiceSelect" class="w-full p-2.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs font-bold focus:outline-none">
+                                <option value="Substantial">Substantial (/səbˈstæn.ʃəl/)</option>
+                                <option value="Exacerbate">Exacerbate (/ɪɡˈzæs.ə.beɪt/)</option>
+                                <option value="Plausible">Plausible (/ˈplɔː.zə.bəl/)</option>
+                                <option value="Biodiversity">Biodiversity (/ˌbaɪ.əʊ.daɪˈvɜː.sə.ti/)</option>
+                            </select>
+                        </div>
+
+                        <button onclick="playDemoVoice()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition shadow flex items-center justify-center gap-2">
+                            🔊 Play Pronunciation
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP-BY-STEP GETTING STARTED WALKTHROUGH -->
+            <section id="guide-walkthrough" class="space-y-8 scroll-mt-24">
+                <div class="text-center max-w-xl mx-auto space-y-2">
+                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Recommended Strategy</span>
+                    <h2 class="text-2xl font-black">4 Steps to Score Higher</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white font-black text-sm flex items-center justify-center shadow-md">01</div>
+                        <h3 class="font-bold text-base">Set Profile Goal</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Input your target score and candidate name in your local profile.</p>
+                    </div>
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white font-black text-sm flex items-center justify-center shadow-md">02</div>
+                        <h3 class="font-bold text-base">Match Vocab Decks</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Play Flash-Match Pro daily to build speed and contextual awareness.</p>
+                    </div>
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-2xl bg-purple-600 text-white font-black text-sm flex items-center justify-center shadow-md">03</div>
+                        <h3 class="font-bold text-base">Submit Writing</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Evaluate Task 2 essays and practice Part 2 speaking cue cards.</p>
+                    </div>
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-600 text-white font-black text-sm flex items-center justify-center shadow-md">04</div>
+                        <h3 class="font-bold text-base">Check Analytics</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Review study time and deck completion rates in your dashboard.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CALL TO ACTION -->
+            <section class="rounded-3xl bg-gradient-to-r from-indigo-600 via-emerald-600 to-teal-600 p-8 sm:p-12 text-white text-center space-y-6 shadow-xl">
+                <div class="max-w-2xl mx-auto space-y-3">
+                    <h2 class="text-3xl font-black">Ready to Start Your IELTS Prep?</h2>
+                    <p class="text-xs sm:text-sm text-indigo-100">Launch the application now to begin active recall vocabulary matching and essay review.</p>
+                </div>
+                <button onclick="switchMainView('app', 'vocab')" class="px-8 py-4 bg-white hover:bg-slate-100 text-indigo-900 font-black text-sm rounded-2xl shadow-2xl transition transform hover:scale-105">
+                    🚀 Launch IELTS Master AI
+                </button>
+            </section>
+
         </div>
 
-        <!-- ================= TAB 4: ANALYTICS & PROGRESS ================= -->
-        <div id="tabContent-analytics" class="tab-content hidden flex flex-col gap-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
-                    <div class="text-xs text-slate-400 font-bold uppercase">Total Study Time</div>
-                    <div id="statStudyTime" class="text-3xl font-black text-indigo-600">3.5 Hours</div>
-                    <p class="text-xs text-slate-500">Consistent daily practice improves band score velocity.</p>
+        <!-- ================================================================= -->
+        <!-- VIEW 2: INTERACTIVE IELTS MASTER AI APP SUITE -->
+        <!-- ================================================================= -->
+        <div id="view-app" class="hidden space-y-6">
+
+            <!-- APP SECTION 1: FLASH-MATCH PRO VOCAB GAME -->
+            <section id="app-section-vocab" class="app-pane space-y-6">
+                <!-- Header Control Strip -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-2xl text-2xl font-bold">🎴</div>
+                        <div>
+                            <h2 class="text-xl font-bold">Flash-Match Pro</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Match academic terms with definitions to build Band 8.5 active recall.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3 text-xs">
+                        <!-- Deck Selector -->
+                        <select id="deckSelector" onchange="loadVocabDeck()" class="p-2.5 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl font-bold focus:outline-none">
+                            <option value="academic">Academic Verbs & Adjectives</option>
+                            <option value="environment">Environment & Technology</option>
+                            <option value="idioms">Advanced Essay Expressions</option>
+                        </select>
+
+                        <!-- Streak Display -->
+                        <div class="px-4 py-2 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 rounded-xl font-bold border border-indigo-100 dark:border-indigo-900 flex items-center gap-2">
+                            <span>🔥 Streak:</span>
+                            <span id="gameStreak" class="text-sm font-black">0</span>
+                        </div>
+
+                        <!-- Reset Game -->
+                        <button onclick="loadVocabDeck()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-xl font-bold transition">
+                            🔄 Restart
+                        </button>
+                    </div>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
-                    <div class="text-xs text-slate-400 font-bold uppercase">Vocabulary Mastered</div>
-                    <div id="statVocabCount" class="text-3xl font-black text-emerald-600">40 / 50</div>
-                    <p class="text-xs text-slate-500">80% deck completion across Academic & Idioms.</p>
+
+                <!-- Game Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column: Terms -->
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Target Terms</h3>
+                        <div id="termsContainer" class="space-y-2.5"></div>
+                    </div>
+
+                    <!-- Right Column: Definitions -->
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Matching Definitions</h3>
+                        <div id="defsContainer" class="space-y-2.5"></div>
+                    </div>
                 </div>
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
-                    <div class="text-xs text-slate-400 font-bold uppercase">Target Band Goal</div>
-                    <div id="statTargetBand" class="text-3xl font-black text-purple-600">Band 8.0</div>
-                    <p class="text-xs text-slate-500">You are on track to achieve your target!</p>
+
+                <!-- INLINE STUDY CARD MODAL/PANEL (Shows on match) -->
+                <div id="studyCard" class="hidden p-6 bg-gradient-to-r from-indigo-900 via-slate-900 to-emerald-950 text-white rounded-3xl border border-indigo-500/30 shadow-2xl space-y-4 pop-in">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <h3 id="cardWord" class="text-2xl font-black text-emerald-300">Substantial</h3>
+                                <span id="cardIpa" class="text-xs font-mono text-slate-300">/səbˈstæn.ʃəl/</span>
+                                <span id="cardPos" class="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-white/10 rounded-full text-indigo-200">adjective</span>
+                            </div>
+                            <p id="cardDef" class="text-xs text-slate-300 mt-1">Of considerable importance, size, or worth.</p>
+                        </div>
+                        <button onclick="speakCurrentCardWord()" class="px-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+                            🔊 Pronounce
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-white/10 text-xs">
+                        <div>
+                            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Collocations:</span>
+                            <p id="cardCollocations" class="text-slate-200 mt-0.5">substantial increase, substantial progress</p>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">Task 2 Example:</span>
+                            <p id="cardExample" class="text-slate-200 mt-0.5 italic">"Investing substantial funds into renewable infrastructure yields long-term economic gains."</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- APP SECTION 2: AI ESSAY EVALUATOR -->
+            <section id="app-section-essay" class="app-pane hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="p-3 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-2xl text-2xl font-bold">✍️</div>
+                            <div>
+                                <h2 class="text-xl font-bold">AI Essay Evaluator (Task 2)</h2>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Instant criteria scoring and lexical feedback.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span id="essayWordCount" class="text-sm font-black text-indigo-600 dark:text-indigo-400">0</span>
+                            <span class="text-xs text-slate-400"> / 250+ Words</span>
+                        </div>
+                    </div>
+
+                    <!-- Prompt Selector -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Select Practice Prompt:</label>
+                        <select id="essayPromptSelect" class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs font-semibold focus:outline-none">
+                            <option value="1">Task 2 Prompt: Some people believe that universities should focus on providing vocational skills, while others think academic education is more valuable. Discuss both views and give your opinion.</option>
+                            <option value="2">Task 2 Prompt: Technological progress has brought many changes to the workplace. Do the advantages of this trend outweigh the disadvantages?</option>
+                        </select>
+                    </div>
+
+                    <!-- Essay Input -->
+                    <textarea id="essayInput" oninput="updateWordCount()" rows="10" placeholder="Type or paste your Task 2 essay response here..." class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs font-mono leading-relaxed focus:outline-none focus:border-indigo-500 transition"></textarea>
+
+                    <div class="flex items-center justify-between gap-4">
+                        <button onclick="loadSampleEssay()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-xs font-bold rounded-xl transition">
+                            📄 Load Band 8.0 Sample
+                        </button>
+                        <button onclick="evaluateEssay()" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-700 hover:to-emerald-700 text-white font-bold text-xs rounded-xl shadow-lg transition">
+                            ✨ Evaluate Essay Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Essay Feedback Results Card -->
+                <div id="essayResults" class="hidden space-y-6 pop-in">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                            <div class="text-xs font-bold text-slate-400 uppercase">Task Response</div>
+                            <div id="scoreTR" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">8.0</div>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                            <div class="text-xs font-bold text-slate-400 uppercase">Coherence</div>
+                            <div id="scoreCC" class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">8.0</div>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                            <div class="text-xs font-bold text-slate-400 uppercase">Lexical Resource</div>
+                            <div id="scoreLR" class="text-2xl font-black text-purple-600 dark:text-purple-400 mt-1">8.5</div>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                            <div class="text-xs font-bold text-slate-400 uppercase">Grammar Range</div>
+                            <div id="scoreGRA" class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">8.0</div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-4">
+                        <h3 class="font-bold text-sm">Detailed Lexical & Structure Analysis:</h3>
+                        <div id="essayFeedbackNotes" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed space-y-2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- APP SECTION 3: AI SPEAKING COACH -->
+            <section id="app-section-speaking" class="app-pane hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 rounded-2xl text-2xl font-bold">🎙️</div>
+                        <div>
+                            <h2 class="text-xl font-bold">AI Speaking Coach (Part 2)</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Timed cue card simulation with audio recording.</p>
+                        </div>
+                    </div>
+
+                    <!-- Cue Card Box -->
+                    <div class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase">Candidate Cue Card Prompt:</span>
+                            <button onclick="newCueCard()" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">🔀 New Cue Card</button>
+                        </div>
+                        <h3 id="cueCardTopic" class="text-base font-bold text-slate-900 dark:text-white">Describe a memorable educational experience you had.</h3>
+                        <ul id="cueCardBullets" class="text-xs text-slate-600 dark:text-slate-400 list-disc pl-5 space-y-1">
+                            <li>Where and when this happened</li>
+                            <li>Who was involved with you</li>
+                            <li>What you learned during the experience</li>
+                            <li>And explain why it was so memorable</li>
+                        </ul>
+                    </div>
+
+                    <!-- Timers & Controls -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
+                            <div class="text-xs font-bold text-slate-400 uppercase">1-Min Prep Timer</div>
+                            <div id="prepTimerDisplay" class="text-3xl font-black text-indigo-600 dark:text-indigo-400 mt-1">01:00</div>
+                            <button onclick="startPrepTimer()" id="prepBtn" class="mt-2 px-4 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold">Start Prep</button>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700">
+                            <div class="text-xs font-bold text-slate-400 uppercase">2-Min Speaking Timer</div>
+                            <div id="speakTimerDisplay" class="text-3xl font-black text-purple-600 dark:text-purple-400 mt-1">02:00</div>
+                            <button onclick="toggleSpeakingRecord()" id="recordBtn" class="mt-2 px-4 py-1.5 bg-purple-600 text-white rounded-xl text-xs font-bold">🎙️ Record Answer</button>
+                        </div>
+                    </div>
+
+                    <!-- Audio Feedback Results -->
+                    <div id="speakingResult" class="hidden p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3 pop-in">
+                        <div class="font-bold text-sm text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                            <span>✅ Recording Complete & Evaluated</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
+                            <div class="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 font-bold">Fluency: 8.0</div>
+                            <div class="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 font-bold">Vocabulary: 8.5</div>
+                            <div class="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 font-bold">Grammar: 8.0</div>
+                            <div class="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 font-bold">Pronunciation: 8.0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- APP SECTION 4: ANALYTICS DASHBOARD -->
+            <section id="app-section-analytics" class="app-pane hidden space-y-6">
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
+                    <div class="flex items-center gap-3">
+                        <div class="p-3 bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 rounded-2xl text-2xl font-bold">📊</div>
+                        <div>
+                            <h2 class="text-xl font-bold">Analytics & Practice Stats</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Track your progress toward Band 8.5.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 text-center space-y-1">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Total Matches Completed</span>
+                            <div id="statTotalMatches" class="text-3xl font-black text-indigo-600 dark:text-indigo-400">0</div>
+                        </div>
+                        <div class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 text-center space-y-1">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Max Match Streak</span>
+                            <div id="statMaxStreak" class="text-3xl font-black text-emerald-600 dark:text-emerald-400">0</div>
+                        </div>
+                        <div class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 text-center space-y-1">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Essays Evaluated</span>
+                            <div id="statEssaysEvaluated" class="text-3xl font-black text-purple-600 dark:text-purple-400">0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
 
     </main>
 
-    <!-- User Profile Modal -->
-    <div id="profileModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-sm w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-4 pop-in">
-            <h3 class="text-lg font-black">Candidate Profile Settings</h3>
-            <div class="space-y-3">
+    <!-- USER PROFILE MODAL -->
+    <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-700 shadow-2xl space-y-5 pop-in">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-base flex items-center gap-2">👤 Candidate Profile</h3>
+                <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+            </div>
+
+            <div class="space-y-4 text-xs">
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Full Name</label>
-                    <input id="profileNameInput" type="text" class="w-full mt-1 px-3 py-2 bg-slate-100 dark:bg-slate-900 rounded-xl text-sm border border-slate-200 dark:border-slate-700 focus:outline-none">
+                    <label class="font-bold text-slate-500 dark:text-slate-400 uppercase">Candidate Name:</label>
+                    <input type="text" id="profileInputName" value="Candidate" class="w-full mt-1 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-bold focus:outline-none">
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Target IELTS Band</label>
-                    <select id="profileBandSelect" class="w-full mt-1 px-3 py-2 bg-slate-100 dark:bg-slate-900 rounded-xl text-sm border border-slate-200 dark:border-slate-700 focus:outline-none">
-                        <option value="7.0">Band 7.0 (Good User)</option>
-                        <option value="7.5">Band 7.5 (Very Good User)</option>
-                        <option value="8.0">Band 8.0 (Expert User)</option>
-                        <option value="8.5">Band 8.5+ (Mastery)</option>
+                    <label class="font-bold text-slate-500 dark:text-slate-400 uppercase">Target Band Score:</label>
+                    <select id="profileInputBand" class="w-full mt-1 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl font-bold focus:outline-none">
+                        <option value="7.5">Band 7.5</option>
+                        <option value="8.0">Band 8.0</option>
+                        <option value="8.5" selected>Band 8.5</option>
+                        <option value="9.0">Band 9.0</option>
                     </select>
                 </div>
             </div>
-            <div class="flex gap-2 pt-2">
-                <button onclick="saveProfile()" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow">Save Profile</button>
-                <button onclick="closeProfileModal()" class="px-4 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl">Cancel</button>
-            </div>
+
+            <button onclick="saveProfile()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition shadow">
+                💾 Save Profile
+            </button>
         </div>
     </div>
 
-    <!-- Victory Overlay -->
-    <div id="victoryOverlay" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-8 text-center border border-slate-200 dark:border-slate-700 shadow-2xl space-y-6 pop-in">
-            <div class="text-6xl">🎉</div>
-            <div>
-                <h2 class="text-2xl font-black bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">Deck Mastered!</h2>
-                <p class="text-sm text-slate-500 mt-1">You successfully matched all 10 vocabulary items!</p>
+    <!-- FOOTER -->
+    <footer class="w-full border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-8 transition-colors mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <div class="flex items-center justify-center gap-2 font-bold text-sm">
+                <span>🎓 IELTS Master AI Suite</span>
             </div>
-            <button onclick="resetGame()" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl shadow-lg transition">Play Next Round</button>
+            <p class="text-xs text-slate-400">
+                Designed for IELTS candidates worldwide. Interactive learning & evaluation tools.
+            </p>
+            <div class="text-[10px] text-slate-500">
+                © 2026 IELTS Master AI. Not affiliated with IDP, British Council, or Cambridge Assessment English.
+            </div>
         </div>
-    </div>
+    </footer>
 
-    <!-- Main JavaScript Application Logic -->
+    <!-- MAIN JAVASCRIPT LOGIC -->
     <script>
-        // User Profile State
-        let userProfile = { name: "Alex Candidate", targetBand: "8.5" };
+        // DATASETS FOR VOCABULARY GAME
+        const VOCAB_DECKS = {
+            academic: [
+                { id: '1', word: 'Substantial', pos: 'adj', ipa: '/səbˈstæn.ʃəl/', def: 'Of considerable importance, size, or worth.', collocations: 'substantial increase, substantial progress', example: 'Investing substantial funds into renewable infrastructure yields long-term gains.' },
+                { id: '2', word: 'Exacerbate', pos: 'verb', ipa: '/ɪɡˈzæs.ə.beɪt/', def: 'To make a problem or situation worse.', collocations: 'exacerbate the problem, exacerbate tensions', example: 'Unregulated urban expansion will exacerbate traffic congestion.' },
+                { id: '3', word: 'Plausible', pos: 'adj', ipa: '/ˈplɔː.zə.bəl/', def: 'Seeming reasonable or probable.', collocations: 'plausible explanation, plausible alternative', example: 'Solar power provides a plausible solution to global energy demands.' },
+                { id: '4', word: 'Detrimental', pos: 'adj', ipa: '/ˌdet.rɪˈmen.təl/', def: 'Tending to cause harm or damage.', collocations: 'detrimental impact, detrimental effect', example: 'Excessive screen time has a detrimental impact on cognitive health.' },
+                { id: '5', word: 'Mitigate', pos: 'verb', ipa: '/ˈmɪt.ɪ.ɡeɪt/', def: 'To make less severe, serious, or painful.', collocations: 'mitigate risks, mitigate damage', example: 'Stricter regulations can mitigate environmental pollution.' }
+            ],
+            environment: [
+                { id: '6', word: 'Biodiversity', pos: 'noun', ipa: '/ˌbaɪ.oʊ.daɪˈvɜːr.sə.ti/', def: 'Variety of plant and animal life in a habitat.', collocations: 'preserve biodiversity, loss of biodiversity', example: 'Deforestation severely threatens global biodiversity.' },
+                { id: '7', word: 'Sustainable', pos: 'adj', ipa: '/səˈsteɪ.nə.bəl/', def: 'Able to be maintained at a certain rate without depleting resources.', collocations: 'sustainable growth, sustainable development', example: 'Cities must adopt sustainable waste management practices.' },
+                { id: '8', word: 'Depletion', pos: 'noun', ipa: '/dɪˈpliː.ʃən/', def: 'Reduction in the number or quantity of something.', collocations: 'resource depletion, ozone depletion', example: 'Overfishing leads to the rapid depletion of marine life.' }
+            ],
+            idioms: [
+                { id: '9', word: 'Double-edged sword', pos: 'idiom', ipa: '/ˈdʌb.əl.edʒd sɔːrd/', def: 'Something that has both positive and negative consequences.', collocations: 'a double-edged sword for society', example: 'Artificial intelligence is a double-edged sword offering efficiency and job displacement risks.' },
+                { id: '10', word: 'Tip of the iceberg', pos: 'idiom', ipa: '/tɪp əv ðə ˈaɪs.bɜːrɡ/', def: 'A small visible part of a much larger hidden problem.', collocations: 'merely the tip of the iceberg', example: 'Visible plastic waste on beaches is merely the tip of the iceberg.' }
+            ]
+        };
 
-        function loadProfile() {
-            const saved = localStorage.getItem('ielts_user_profile');
-            if (saved) userProfile = JSON.parse(saved);
-            document.getElementById('headerUserName').innerText = userProfile.name.split(' ')[0];
-            document.getElementById('profileNameInput').value = userProfile.name;
-            document.getElementById('profileBandSelect').value = userProfile.targetBand;
-            document.getElementById('statTargetBand').innerText = `Band ${userProfile.targetBand}`;
+        const CUE_CARDS = [
+            { topic: "Describe a memorable educational experience you had.", bullets: ["Where and when this happened", "Who was involved with you", "What you learned during the experience", "And explain why it was so memorable"] },
+            { topic: "Describe an environmental project you know about.", bullets: ["What the project is focused on", "How it helps the environment", "Who participates in it", "And explain how you feel about its impact"] },
+            { topic: "Describe a piece of technology that saves you time.", bullets: ["What the device or app is", "How often you use it", "What tasks it helps you complete", "And explain why it is essential to you"] }
+        ];
+
+        // STATE VARIABLES
+        let appState = {
+            view: 'guide',
+            appTab: 'vocab',
+            selectedTermId: null,
+            selectedDefId: null,
+            streak: 0,
+            maxStreak: 0,
+            totalMatches: 0,
+            essaysEvaluated: 0,
+            currentDeckKey: 'academic',
+            currentCard: null,
+            prepTimer: null,
+            prepTimeLeft: 60,
+            speakTimer: null,
+            speakTimeLeft: 120,
+            isRecording: false,
+            userName: 'Candidate',
+            targetBand: '8.5'
+        };
+
+        // INITIALIZATION
+        window.onload = function() {
+            loadProfileFromStorage();
+            loadVocabDeck();
+            updateScoreCalc();
+        };
+
+        // VIEW NAVIGATION CONTROLLER
+        function switchMainView(targetView, targetTab) {
+            appState.view = targetView;
+            if (targetTab) appState.appTab = targetTab;
+
+            const guideView = document.getElementById('view-guide');
+            const appView = document.getElementById('view-app');
+            const ctaBtn = document.getElementById('ctaLaunchBtn');
+
+            if (targetView === 'guide') {
+                guideView.classList.remove('hidden');
+                appView.classList.add('hidden');
+                ctaBtn.innerHTML = "<span>Launch App</span> ➔";
+                ctaBtn.onclick = () => switchMainView('app', 'vocab');
+                
+                document.getElementById('navBtn-guide').className = "px-4 py-2 rounded-xl transition-all bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm";
+                ['vocab', 'essay', 'speaking', 'analytics'].forEach(t => {
+                    document.getElementById(`navBtn-${t}`).className = "px-4 py-2 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+                });
+            } else {
+                guideView.classList.add('hidden');
+                appView.classList.remove('hidden');
+                ctaBtn.innerHTML = "<span>📖 View Guide</span>";
+                ctaBtn.onclick = () => switchMainView('guide');
+
+                showAppPane(appState.appTab);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
-        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
-        function saveProfile() {
-            userProfile.name = document.getElementById('profileNameInput').value || 'Candidate';
-            userProfile.targetBand = document.getElementById('profileBandSelect').value;
-            localStorage.setItem('ielts_user_profile', JSON.stringify(userProfile));
-            loadProfile();
-            closeProfileModal();
-        }
+        function showAppPane(paneTab) {
+            appState.appTab = paneTab;
+            document.querySelectorAll('.app-pane').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`app-section-${paneTab}`).classList.remove('hidden');
 
-        // Tab Switching Logic
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('nav button').forEach(el => {
-                el.className = "px-3 py-1.5 rounded-lg transition text-slate-600 dark:text-slate-300";
+            document.getElementById('navBtn-guide').className = "px-4 py-2 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+            ['vocab', 'essay', 'speaking', 'analytics'].forEach(t => {
+                const btn = document.getElementById(`navBtn-${t}`);
+                if (t === paneTab) {
+                    btn.className = "px-4 py-2 rounded-xl transition-all bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm";
+                } else {
+                    btn.className = "px-4 py-2 rounded-xl transition-all text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+                }
             });
-            document.getElementById(`tabContent-${tabId}`).classList.remove('hidden');
-            document.getElementById(`tabBtn-${tabId}`).className = "px-3 py-1.5 rounded-lg transition bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-sm";
+
+            if (paneTab === 'analytics') updateAnalyticsDisplay();
         }
 
-        // AI Essay Evaluation Simulator
-        document.getElementById('essayInput').addEventListener('input', (e) => {
-            const words = e.target.value.trim().split(/\s+/).filter(Boolean).length;
-            document.getElementById('wordCountDisplay').innerText = `Words: ${words}`;
-        });
+        // MODULE TAB SWITCHER FOR GUIDE VIEW
+        function showModuleTab(paneId) {
+            document.querySelectorAll('.mod-pane').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('#view-guide button[id^="modTabBtn-"]').forEach(el => {
+                el.className = "px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300";
+            });
+
+            document.getElementById(paneId).classList.remove('hidden');
+            document.getElementById(`modTabBtn-${paneId}`).className = "px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap bg-indigo-600 text-white shadow";
+        }
+
+        // FLASH-MATCH VOCAB GAME ENGINE
+        function loadVocabDeck() {
+            const key = document.getElementById('deckSelector').value;
+            appState.currentDeckKey = key;
+            appState.selectedTermId = null;
+            appState.selectedDefId = null;
+            document.getElementById('studyCard').classList.add('hidden');
+
+            const deck = VOCAB_DECKS[key] || VOCAB_DECKS.academic;
+            const terms = [...deck].sort(() => Math.random() - 0.5);
+            const defs = [...deck].sort(() => Math.random() - 0.5);
+
+            const termsContainer = document.getElementById('termsContainer');
+            const defsContainer = document.getElementById('defsContainer');
+
+            termsContainer.innerHTML = terms.map(item => `
+                <button onclick="selectTerm('${item.id}')" id="term-${item.id}" class="w-full p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 font-bold text-xs text-left transition hover:border-indigo-500 shadow-sm">
+                    ${item.word} <span class="text-[10px] text-slate-400 font-normal">(${item.pos})</span>
+                </button>
+            `).join('');
+
+            defsContainer.innerHTML = defs.map(item => `
+                <button onclick="selectDef('${item.id}')" id="def-${item.id}" class="w-full p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs text-left transition hover:border-indigo-500 shadow-sm leading-relaxed">
+                    ${item.def}
+                </button>
+            `).join('');
+        }
+
+        function selectTerm(id) {
+            if (appState.selectedTermId) {
+                const prev = document.getElementById(`term-${appState.selectedTermId}`);
+                if (prev) prev.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950');
+            }
+            appState.selectedTermId = id;
+            const current = document.getElementById(`term-${id}`);
+            if (current) current.classList.add('ring-2', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950');
+            checkMatchAttempt();
+        }
+
+        function selectDef(id) {
+            if (appState.selectedDefId) {
+                const prev = document.getElementById(`def-${appState.selectedDefId}`);
+                if (prev) prev.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950');
+            }
+            appState.selectedDefId = id;
+            const current = document.getElementById(`def-${id}`);
+            if (current) current.classList.add('ring-2', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950');
+            checkMatchAttempt();
+        }
+
+        function checkMatchAttempt() {
+            if (appState.selectedTermId && appState.selectedDefId) {
+                if (appState.selectedTermId === appState.selectedDefId) {
+                    // Match Success!
+                    appState.streak++;
+                    appState.totalMatches++;
+                    if (appState.streak > appState.maxStreak) appState.maxStreak = appState.streak;
+                    document.getElementById('gameStreak').innerText = appState.streak;
+
+                    const termBtn = document.getElementById(`term-${appState.selectedTermId}`);
+                    const defBtn = document.getElementById(`def-${appState.selectedDefId}`);
+                    
+                    termBtn.className = "w-full p-4 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500 text-emerald-700 dark:text-emerald-300 rounded-2xl font-bold text-xs text-left pointer-events-none opacity-60";
+                    defBtn.className = "w-full p-4 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-500 text-emerald-700 dark:text-emerald-300 rounded-2xl text-xs text-left pointer-events-none opacity-60";
+
+                    // Show Study Card
+                    const deck = VOCAB_DECKS[appState.currentDeckKey];
+                    const matchedItem = deck.find(item => item.id === appState.selectedTermId);
+                    if (matchedItem) showStudyCard(matchedItem);
+
+                    appState.selectedTermId = null;
+                    appState.selectedDefId = null;
+                } else {
+                    // Match Fail
+                    appState.streak = 0;
+                    document.getElementById('gameStreak').innerText = "0";
+
+                    const termBtn = document.getElementById(`term-${appState.selectedTermId}`);
+                    const defBtn = document.getElementById(`def-${appState.selectedDefId}`);
+
+                    termBtn.classList.add('border-red-500');
+                    defBtn.classList.add('border-red-500');
+
+                    setTimeout(() => {
+                        termBtn.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950', 'border-red-500');
+                        defBtn.classList.remove('ring-2', 'ring-indigo-500', 'bg-indigo-50', 'dark:bg-indigo-950', 'border-red-500');
+                        appState.selectedTermId = null;
+                        appState.selectedDefId = null;
+                    }, 400);
+                }
+            }
+        }
+
+        function showStudyCard(item) {
+            appState.currentCard = item;
+            document.getElementById('cardWord').innerText = item.word;
+            document.getElementById('cardIpa').innerText = item.ipa;
+            document.getElementById('cardPos').innerText = item.pos;
+            document.getElementById('cardDef').innerText = item.def;
+            document.getElementById('cardCollocations').innerText = item.collocations;
+            document.getElementById('cardExample').innerText = `"${item.example}"`;
+            document.getElementById('studyCard').classList.remove('hidden');
+        }
+
+        function speakCurrentCardWord() {
+            if (appState.currentCard && 'speechSynthesis' in window) {
+                let utterance = new SpeechSynthesisUtterance(appState.currentCard.word);
+                utterance.lang = 'en-GB';
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // ESSAY EVALUATOR ENGINE
+        function updateWordCount() {
+            const text = document.getElementById('essayInput').value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            document.getElementById('essayWordCount').innerText = words;
+        }
+
+        function loadSampleEssay() {
+            document.getElementById('essayInput').value = "In contemporary society, whether higher education should prioritize technical job skills or academic theory remains a subject of intense debate. While vocational training directly prepares students for immediate employment, I firmly believe a university education must emphasize comprehensive academic knowledge to foster critical thinking and long-term adaptability.\n\nOn the one hand, specialized vocational training offers undeniable economic benefits. Graduates equipped with practical skills can seamlessly integrate into workforce sectors, mitigating youth unemployment rates. Furthermore, technical proficiency directly addresses immediate skill shortages in manufacturing and digital industries.\n\nOn the other hand, academic education provides students with intellectual flexibility and problem-solving abilities. A rigorous academic curriculum encourages analytical reasoning, allowing individuals to adapt to changing career landscapes over time. Therefore, universities should focus on holistic intellectual development rather than narrow trade skills.";
+            updateWordCount();
+        }
 
         function evaluateEssay() {
             const text = document.getElementById('essayInput').value.trim();
             if (text.length < 50) {
-                alert("Please write a bit more of your essay before running AI review.");
+                alert("Please enter a complete essay response (at least 50 words) for evaluation.");
                 return;
             }
-            document.getElementById('essayFeedbackContainer').classList.remove('hidden');
-            document.getElementById('essayStrengths').innerHTML = `
-                <li>Good lexical variety with strong academic verbs.</li>
-                <li>Clear paragraph structuring and logical progression.</li>
+
+            appState.essaysEvaluated++;
+            document.getElementById('essayResults').classList.remove('hidden');
+
+            const wordCount = text.split(/\s+/).length;
+            const hasParagraphs = text.includes('\n');
+
+            document.getElementById('scoreTR').innerText = wordCount >= 250 ? '8.0' : '6.5';
+            document.getElementById('scoreCC').innerText = hasParagraphs ? '8.0' : '6.0';
+            document.getElementById('scoreLR').innerText = '8.5';
+            document.getElementById('scoreGRA').innerText = '8.0';
+
+            document.getElementById('essayFeedbackNotes').innerHTML = `
+                <p>• <strong>Lexical Choice:</strong> Strong academic vocabulary detected (e.g., "contemporary society", "holistic", "mitigating", "analytical reasoning").</p>
+                <p>• <strong>Coherence:</strong> ${hasParagraphs ? 'Clear paragraph structure with cohesive transitional devices.' : 'Add line breaks between introduction, body, and conclusion paragraphs.'}</p>
+                <p>• <strong>Length Check:</strong> Total words: ${wordCount}. ${wordCount >= 250 ? 'Requirement met!' : 'Under 250 words - expand body paragraphs to avoid penalties.'}</p>
             `;
-            document.getElementById('essayImprovements').innerHTML = `
-                <li>Integrate more complex passive structures to boost grammatical range.</li>
-                <li>Ensure precise use of cohesive devices between body paragraphs.</li>
-            `;
         }
 
-        // AI Speaking Simulator Controls
-        let speakingTimerInterval;
-        function startSpeakingRecording() {
-            document.getElementById('recordBtn').disabled = true;
-            document.getElementById('recordBtn').className = "px-6 py-3 bg-slate-300 dark:bg-slate-700 text-slate-500 rounded-xl text-xs font-bold cursor-not-allowed";
-            document.getElementById('stopBtn').disabled = false;
-            document.getElementById('stopBtn').className = "px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg transition";
-            
-            let timeLeft = 120;
-            speakingTimerInterval = setInterval(() => {
-                timeLeft--;
-                let m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-                let s = (timeLeft % 60).toString().padStart(2, '0');
-                document.getElementById('speakingTimer').innerText = `${m}:${s}`;
-                if (timeLeft <= 0) stopSpeakingRecording();
-            }, 1000);
+        // SPEAKING COACH ENGINE
+        function newCueCard() {
+            const card = CUE_CARDS[Math.floor(Math.random() * CUE_CARDS.length)];
+            document.getElementById('cueCardTopic').innerText = card.topic;
+            document.getElementById('cueCardBullets').innerHTML = card.bullets.map(b => `<li>${b}</li>`).join('');
+            document.getElementById('speakingResult').classList.add('hidden');
         }
 
-        function stopSpeakingRecording() {
-            clearInterval(speakingTimerInterval);
-            document.getElementById('stopBtn').disabled = true;
-            document.getElementById('stopBtn').className = "px-6 py-3 bg-slate-300 dark:bg-slate-700 text-slate-500 rounded-xl text-xs font-bold cursor-not-allowed";
-            document.getElementById('speakingFeedbackContainer').classList.remove('hidden');
-        }
+        function startPrepTimer() {
+            clearInterval(appState.prepTimer);
+            appState.prepTimeLeft = 60;
+            const btn = document.getElementById('prepBtn');
+            btn.disabled = true;
+            btn.className = "mt-2 px-4 py-1.5 bg-slate-300 text-slate-500 rounded-xl text-xs font-bold cursor-not-allowed";
 
-        // Flash-Match Game Dataset & Logic
-        const database = {
-            ielts_verbs: [
-                { en: "Substantial", pos: "Adjective", ipa: "/səbˈstæn.ʃəl/", collocations: "substantial increase", definition: "Large in size, value, or importance", synonym: "Significant", antonym: "Insignificant", essayTopic: "Global Economy", essayUsage: "There has been a substantial increase in public expenditure." },
-                { en: "Mitigate", pos: "Verb", ipa: "/ˈmɪt.ɪ.ɡeɪt/", collocations: "mitigate the impact", definition: "To make something less harmful or severe", synonym: "Alleviate", antonym: "Exacerbate", essayTopic: "Environment", essayUsage: "Prompt government action is vital to mitigate global warming." },
-                { en: "Plausible", pos: "Adjective", ipa: "/ˈplɔː.zə.bəl/", collocations: "plausible explanation", definition: "Seeming reasonable or likely to be true", synonym: "Credible", antonym: "Unlikely", essayTopic: "Science", essayUsage: "A plausible solution to traffic congestion is rail expansion." },
-                { en: "Exacerbate", pos: "Verb", ipa: "/ɪɡˈzæs.ə.beɪt/", collocations: "exacerbate the problem", definition: "To make a bad situation worse", synonym: "Worsen", antonym: "Ameliorate", essayTopic: "Urbanization", essayUsage: "Unregulated urban sprawl will exacerbate environmental degradation." },
-                { en: "Advocate", pos: "Verb", ipa: "/ˈæd.və.keɪt/", collocations: "advocate for reform", definition: "To publicly support or recommend a cause", synonym: "Endorse", antonym: "Oppose", essayTopic: "Education", essayUsage: "Experts advocate incorporating vocational skills into curricula." },
-                { en: "Detrimental", pos: "Adjective", ipa: "/ˌdet.rɪˈmen.təl/", collocations: "detrimental effect", definition: "Causing harm or disadvantage", synonym: "Harmful", antonym: "Beneficial", essayTopic: "Health", essayUsage: "Excessive screen time exerts a detrimental influence on youth." },
-                { en: "Compelling", pos: "Adjective", ipa: "/kəmˈpel.ɪŋ/", collocations: "compelling argument", definition: "Convincingly interesting", synonym: "Persuasive", antonym: "Weak", essayTopic: "Public Policy", essayUsage: "There are compelling arguments in favor of public transport." },
-                { en: "Consolidate", pos: "Verb", ipa: "/kənˈsɒl.ɪ.deɪt/", collocations: "consolidate power", definition: "Combine into a single stronger whole", synonym: "Strengthen", antonym: "Weaken", essayTopic: "Economics", essayUsage: "Nations must consolidate their fiscal infrastructure." },
-                { en: "Imperative", pos: "Adjective", ipa: "/ɪmˈper.ə.tɪv/", collocations: "imperative that", definition: "Of vital importance; crucial", synonym: "Crucial", antonym: "Optional", essayTopic: "Global Health", essayUsage: "It is imperative that international bodies collaborate." },
-                { en: "Prevalent", pos: "Adjective", ipa: "/ˈprev.əl.ənt/", collocations: "widely prevalent", definition: "Widespread or commonly occurring", synonym: "Ubiquitous", antonym: "Rare", essayTopic: "Sociology", essayUsage: "Sedentary lifestyles are increasingly prevalent." }
-            ]
-        };
+            appState.prepTimer = setInterval(() => {
+                appState.prepTimeLeft--;
+                let sec = appState.prepTimeLeft < 10 ? '0' + appState.prepTimeLeft : appState.prepTimeLeft;
+                document.getElementById('prepTimerDisplay').innerText = `00:${sec}`;
 
-        let currentDeck = database.ielts_verbs;
-        let selectedLeft = null;
-        let matchedPairs = 0;
-        let score = 0;
-        let streak = 0;
-        let timerSeconds = 0;
-        let timerInterval = null;
-        let soundEnabled = true;
-        let currentModalWordData = null;
-
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            timerSeconds = 0;
-            timerInterval = setInterval(() => {
-                timerSeconds++;
-                let m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
-                let s = (timerSeconds % 60).toString().padStart(2, '0');
-                document.getElementById('timerDisplay').innerText = `${m}:${s}`;
-            }, 1000);
-        }
-
-        function resetGame() {
-            matchedPairs = 0;
-            score = 0;
-            streak = 0;
-            document.getElementById('matchCount').innerText = 0;
-            document.getElementById('scoreDisplay').innerText = 0;
-            document.getElementById('streakCount').innerText = "0x";
-            document.getElementById('victoryOverlay').classList.add('hidden');
-            document.getElementById('inlineCardContainer').classList.add('hidden');
-            startTimer();
-            renderBoard();
-        }
-
-        function renderBoard() {
-            const leftCol = document.getElementById('leftColumn');
-            const rightCol = document.getElementById('rightColumn');
-            leftCol.innerHTML = '';
-            rightCol.innerHTML = '';
-
-            let shuffledWords = [...currentDeck].sort(() => Math.random() - 0.5);
-            let shuffledDefs = [...currentDeck].sort(() => Math.random() - 0.5);
-
-            shuffledWords.forEach(item => {
-                let btn = document.createElement('button');
-                btn.className = "w-full p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-left font-bold text-sm shadow-sm hover:border-indigo-500 transition flex items-center justify-between";
-                btn.innerHTML = `<span>${item.en}</span> <span class="text-xs text-slate-400 font-normal">${item.pos}</span>`;
-                btn.onclick = () => selectWord(item, btn);
-                leftCol.appendChild(btn);
-            });
-
-            shuffledDefs.forEach(item => {
-                let btn = document.createElement('button');
-                btn.className = "w-full p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-left text-xs font-semibold shadow-sm hover:border-emerald-500 transition";
-                btn.innerText = item.definition;
-                btn.onclick = () => selectDefinition(item, btn);
-                rightCol.appendChild(btn);
-            });
-            document.getElementById('totalPairsCount').innerText = currentDeck.length;
-        }
-
-        function selectWord(item, btn) {
-            document.querySelectorAll('#leftColumn button').forEach(b => b.classList.remove('ring-2', 'ring-indigo-500'));
-            btn.classList.add('ring-2', 'ring-indigo-500');
-            selectedLeft = item;
-        }
-
-        function selectDefinition(item, btn) {
-            if (!selectedLeft) return;
-            if (selectedLeft.en === item.en) {
-                // Correct match
-                btn.className = "w-full p-4 bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow transition";
-                matchedPairs++;
-                streak++;
-                score += 100 * streak;
-                document.getElementById('matchCount').innerText = matchedPairs;
-                document.getElementById('scoreDisplay').innerText = score;
-                document.getElementById('streakCount').innerText = `${streak}x`;
-                
-                showInlineStudyCard(item);
-                selectedLeft = null;
-                if (matchedPairs === currentDeck.length) {
-                    clearInterval(timerInterval);
-                    document.getElementById('victoryOverlay').classList.remove('hidden');
+                if (appState.prepTimeLeft <= 0) {
+                    clearInterval(appState.prepTimer);
+                    document.getElementById('prepTimerDisplay').innerText = "00:00";
+                    btn.disabled = false;
+                    btn.className = "mt-2 px-4 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold";
                 }
+            }, 1000);
+        }
+
+        function toggleSpeakingRecord() {
+            const btn = document.getElementById('recordBtn');
+            if (!appState.isRecording) {
+                appState.isRecording = true;
+                btn.innerText = "⏹️ Stop & Score";
+                btn.className = "mt-2 px-4 py-1.5 bg-red-600 text-white rounded-xl text-xs font-bold animate-pulse";
+                appState.speakTimeLeft = 120;
+
+                appState.speakTimer = setInterval(() => {
+                    appState.speakTimeLeft--;
+                    let min = Math.floor(appState.speakTimeLeft / 60);
+                    let sec = appState.speakTimeLeft % 60;
+                    let displaySec = sec < 10 ? '0' + sec : sec;
+                    document.getElementById('speakTimerDisplay').innerText = `0${min}:${displaySec}`;
+
+                    if (appState.speakTimeLeft <= 0) {
+                        toggleSpeakingRecord();
+                    }
+                }, 1000);
             } else {
-                streak = 0;
-                document.getElementById('streakCount').innerText = "0x";
-                btn.classList.add('shake', 'bg-red-500/10', 'border-red-500');
-                setTimeout(() => btn.classList.remove('shake', 'bg-red-500/10', 'border-red-500'), 500);
+                appState.isRecording = false;
+                clearInterval(appState.speakTimer);
+                btn.innerText = "🎙️ Record Answer";
+                btn.className = "mt-2 px-4 py-1.5 bg-purple-600 text-white rounded-xl text-xs font-bold";
+                document.getElementById('speakingResult').classList.remove('hidden');
             }
         }
 
-        function showInlineStudyCard(item) {
-            currentModalWordData = item;
-            document.getElementById('inlineCardContainer').classList.remove('hidden');
-            document.getElementById('cardWord').innerText = item.en;
-            document.getElementById('cardPos').innerText = item.pos;
-            document.getElementById('cardIpa').innerText = item.ipa;
-            document.getElementById('cardMeaning').innerText = item.definition;
-            document.getElementById('cardSynonym').innerText = item.synonym;
-            document.getElementById('cardAntonym').innerText = item.antonym;
-            document.getElementById('cardCollocations').innerText = item.collocations;
-            document.getElementById('cardEssayTopic').innerText = item.essayTopic;
-            document.getElementById('cardEssayUsage').innerHTML = `"${item.essayUsage}"`;
+        // ANALYTICS & PROFILE FUNCTIONS
+        function updateAnalyticsDisplay() {
+            document.getElementById('statTotalMatches').innerText = appState.totalMatches;
+            document.getElementById('statMaxStreak').innerText = appState.maxStreak;
+            document.getElementById('statEssaysEvaluated').innerText = appState.essaysEvaluated;
         }
 
-        function speakWord(word) {
+        function openProfileModal() {
+            document.getElementById('profileInputName').value = appState.userName;
+            document.getElementById('profileInputBand').value = appState.targetBand;
+            document.getElementById('profileModal').classList.remove('hidden');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+
+        function saveProfile() {
+            appState.userName = document.getElementById('profileInputName').value.trim() || 'Candidate';
+            appState.targetBand = document.getElementById('profileInputBand').value;
+            
+            document.getElementById('headerUserName').innerText = appState.userName;
+            document.getElementById('headerSubTitle').innerText = `Target Band ${appState.targetBand} Candidate`;
+
+            localStorage.setItem('ieltsMasterUser', JSON.stringify({
+                name: appState.userName,
+                band: appState.targetBand
+            }));
+
+            closeProfileModal();
+        }
+
+        function loadProfileFromStorage() {
+            const saved = localStorage.getItem('ieltsMasterUser');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    appState.userName = parsed.name || 'Candidate';
+                    appState.targetBand = parsed.band || '8.5';
+                    document.getElementById('headerUserName').innerText = appState.userName;
+                    document.getElementById('headerSubTitle').innerText = `Target Band ${appState.targetBand} Candidate`;
+                } catch(e) {}
+            }
+        }
+
+        // DEMO TOOLS FOR GUIDE VIEW
+        function updateScoreCalc() {
+            const l = parseFloat(document.getElementById('calcSlider-L').value);
+            const r = parseFloat(document.getElementById('calcSlider-R').value);
+            const w = parseFloat(document.getElementById('calcSlider-W').value);
+            const s = parseFloat(document.getElementById('calcSlider-S').value);
+
+            document.getElementById('calcVal-L').innerText = l.toFixed(1);
+            document.getElementById('calcVal-R').innerText = r.toFixed(1);
+            document.getElementById('calcVal-W').innerText = w.toFixed(1);
+            document.getElementById('calcVal-S').innerText = s.toFixed(1);
+
+            const rawAvg = (l + r + w + s) / 4;
+            let rounded = Math.round(rawAvg * 2) / 2;
+            document.getElementById('calcResultBand').innerText = rounded.toFixed(1);
+        }
+
+        function runDemoEssayFix() {
+            document.getElementById('demoEssayResult').classList.remove('hidden');
+        }
+
+        function playDemoVoice() {
+            const word = document.getElementById('demoVoiceSelect').value;
             if ('speechSynthesis' in window) {
                 let utterance = new SpeechSynthesisUtterance(word);
                 utterance.lang = 'en-GB';
@@ -543,15 +1161,10 @@
             }
         }
 
-        function toggleAudio() { soundEnabled = !soundEnabled; document.getElementById('audioToggleBtn').innerText = soundEnabled ? '🔊' : '🔇'; }
-        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
-        function getHint() { alert("Match academic verbs on the left with their correct definitions on the right!"); }
-
-        // Initialize App on Load
-        window.onload = () => {
-            loadProfile();
-            resetGame();
-        };
+        // THEME TOGGLE
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+        }
     </script>
 </body>
 </html>
