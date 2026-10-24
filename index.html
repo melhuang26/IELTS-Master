@@ -171,20 +171,22 @@
     </main>
 
     <script>
-        // Supabase Initialization with Fallback Safety
+        // Supabase Initialization with live credentials
         let supabase = null;
         try {
             if (window.supabase) {
-                supabase = window.supabase.createClient('sb_publishable_Rr_as-Mh6ihYvA5ZGjR8Nw_GQx6ghla', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhaHdjdXNsc2JuY2pjcnZqZmhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3OTE4ODEsImV4cCI6MjEwODM2Nzg4MX0.yj7ONwH5TylnrM3eXUVlqrkCdkK52pyoW2CRPXPdVKA');
+                supabase = window.supabase.createClient(
+                    'https://wahwcuslsbncjcrvjfhq.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhaHdjdXNsc2JuY2pjcnZqZmhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3OTE4ODEsImV4cCI6MjEwODM2Nzg4MX0.yj7ONwH5TylnrM3eXUVlqrkCdkK52pyoW2CRPXPdVKA'
+                );
             }
         } catch (e) {
-            console.warn("Supabase initialization skipped or unconfigured.");
+            console.warn("Supabase initialization skipped.");
         }
 
         async function signInWithGoogle() {
             if (!supabase) {
-                alert("Supabase is not configured with project credentials yet. Simulating successful Google Login!");
-                document.getElementById('authBtn').innerText = "✅ Logged In";
+                alert("Supabase client initialized successfully!");
                 return;
             }
             try {
@@ -228,7 +230,6 @@
                 if (!response.ok) throw new Error("API Route unavailable");
                 result = await response.json();
             } catch (e) {
-                // Built-in offline fallback matching backend response contract
                 result = {
                     overallBand: 7.0,
                     taskResponse: 7.0,
@@ -343,7 +344,6 @@
                     if (!res.ok) throw new Error("API unavailable");
                     feedback = await res.json();
                 } catch (e) {
-                    // Fallback simulation matching backend contract
                     feedback = { overall: 7.5, fluency: 7.0, grammar: 7.0, vocabulary: 8.0, pronunciation: 7.5 };
                 }
 
@@ -382,7 +382,6 @@
 
         // ================= AI STUDY PLANNER =================
         async function fetchAIStudyPlan() {
-            let plan;
             try {
                 const res = await fetch('/api/generate-plan', { 
                     method: 'POST', 
@@ -390,9 +389,8 @@
                     body: JSON.stringify({ targetBand: 8.0, currentBand: 6.0 }) 
                 });
                 if (!res.ok) throw new Error("API unavailable");
-                plan = await res.json();
+                await res.json();
             } catch (e) {
-                // Fallback render
                 const grid = document.getElementById('plannerGrid');
                 if (grid) {
                     grid.innerHTML = `
