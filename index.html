@@ -1,442 +1,146 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IELTS Master AI — Production Suite</title>
+    <title>IELTS Master AI</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Supabase JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: { brand: { 500: '#22c55e', 600: '#16a34a' } }
-                }
-            }
-        }
-    </script>
-    <style>
-        .pop-in { animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes popIn {
-            0% { opacity: 0; transform: scale(0.96) translateY(12px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-    </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen font-sans antialiased flex flex-col">
+<body class="bg-slate-50 min-h-screen p-6">
 
-    <!-- Header Navigation -->
-    <header class="w-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('dashboard')">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-500 flex items-center justify-center text-white font-black text-xl shadow">🎓</div>
-                <div>
-                    <h1 class="text-lg font-bold bg-gradient-to-r from-indigo-600 to-emerald-600 bg-clip-text text-transparent">IELTS Master AI</h1>
-                    <p class="text-[10px] text-slate-500 font-semibold">Production AI Architecture</p>
-                </div>
-            </div>
-            <nav class="hidden md:flex gap-1 bg-slate-100 dark:bg-slate-700/50 p-1 rounded-xl text-xs font-bold">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-indigo-600 shadow-sm">Dashboard</button>
-                <button onclick="switchTab('vocab')" id="nav-vocab" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300">SRS Vocab (1000+)</button>
-                <button onclick="switchTab('speaking')" id="nav-speaking" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300">Speaking AI Pipeline</button>
-                <button onclick="switchTab('analytics')" id="nav-analytics" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300">Progress Charts</button>
-                <button onclick="switchTab('planner')" id="nav-planner" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300">AI Planner</button>
-            </nav>
-            <button onclick="signInWithGoogle()" id="authBtn" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow flex items-center gap-1.5">🌐 Google Login</button>
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">IELTS Master AI</h1>
+        
+        <!-- Navigation Tabs -->
+        <div class="flex gap-2 mb-6">
+            <button onclick="switchTab('dashboard')" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition">Dashboard</button>
+            <button onclick="switchTab('vocab')" class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition">Vocabulary</button>
+            <button onclick="switchTab('analytics')" class="bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700 transition">Analytics</button>
         </div>
-    </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="space-y-4">
+            <h2 class="text-xl font-bold mb-2">Essay Review</h2>
+            <textarea id="essayInput" class="w-full border p-3 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" rows="6" placeholder="Paste your IELTS essay here..."></textarea>
+            <button onclick="submitEssayReview()" class="bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700 transition">Review Essay</button>
+            <div id="essayOutput" class="hidden p-4 border bg-white rounded shadow-sm"></div>
+        </div>
 
-        <!-- ================= DASHBOARD & ESSAY REVIEW ================= -->
-        <div id="tab-dashboard" class="space-y-6">
-            <div class="bg-gradient-to-r from-indigo-900 to-slate-900 text-white p-6 rounded-3xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div>
-                    <span class="text-xs font-bold text-indigo-300 uppercase">Formula: (Writing + Speaking + Reading + Listening) / 4</span>
-                    <h2 class="text-4xl font-black mt-1">Expected Band: <span class="text-emerald-400" id="overallPredictedBand">7.25</span></h2>
-                    <p class="text-xs text-slate-300 mt-1">Synced securely via Supabase database RLS.</p>
-                </div>
-                <div class="grid grid-cols-4 gap-2 text-center text-xs">
-                    <div class="p-3 bg-white/10 rounded-xl"><div class="text-[10px] text-indigo-200">Writing</div><div id="scoreW" class="font-black text-lg">7.0</div></div>
-                    <div class="p-3 bg-white/10 rounded-xl"><div class="text-[10px] text-indigo-200">Speaking</div><div id="scoreS" class="font-black text-lg">7.5</div></div>
-                    <div class="p-3 bg-white/10 rounded-xl"><div class="text-[10px] text-indigo-200">Reading</div><div id="scoreR" class="font-black text-lg">7.0</div></div>
-                    <div class="p-3 bg-white/10 rounded-xl"><div class="text-[10px] text-indigo-200">Listening</div><div id="scoreL" class="font-black text-lg">7.5</div></div>
-                </div>
-            </div>
-
-            <!-- Essay Review Section -->
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-4">
-                <div>
-                    <h3 class="text-base font-bold">✍️ AI Essay Reviewer</h3>
-                    <p class="text-xs text-slate-500">Secure backend processing via server-side API routes.</p>
-                </div>
-                <textarea id="essayInput" rows="6" class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm focus:outline-none" placeholder="Paste Task 2 essay here..."></textarea>
-                <button onclick="submitEssayReview()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow">🚀 Submit for Examiner Review</button>
-
-                <!-- Response Box -->
-                <div id="essayResponseBox" class="hidden space-y-4 pt-4 border-t border-slate-200 dark:border-slate-700 pop-in">
-                    <div class="grid grid-cols-5 gap-2 text-center text-xs">
-                        <div class="p-3 bg-indigo-600 text-white rounded-xl"><div class="text-[10px]">Overall</div><div id="apiBand" class="font-black text-lg">7.0</div></div>
-                        <div class="p-3 bg-slate-100 dark:bg-slate-900 rounded-xl"><div class="text-[10px]">Task Response</div><div id="apiTR" class="font-bold">7.0</div></div>
-                        <div class="p-3 bg-slate-100 dark:bg-slate-900 rounded-xl"><div class="text-[10px]">Coherence</div><div id="apiCC" class="font-bold">7.0</div></div>
-                        <div class="p-3 bg-slate-100 dark:bg-slate-900 rounded-xl"><div class="text-[10px]">Vocabulary</div><div id="apiLR" class="font-bold">8.0</div></div>
-                        <div class="p-3 bg-slate-100 dark:bg-slate-900 rounded-xl"><div class="text-[10px]">Grammar</div><div id="apiGRA" class="font-bold">6.5</div></div>
-                    </div>
-                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 text-xs space-y-2">
-                        <div class="font-bold text-red-500 uppercase">Mistakes & Feedback:</div>
-                        <ul id="apiMistakes" class="list-disc pl-4 space-y-1 text-slate-600 dark:text-slate-300"></ul>
-                    </div>
-                </div>
+        <!-- Vocabulary Tab -->
+        <div id="vocab" class="hidden space-y-4">
+            <h2 class="text-xl font-bold mb-4">Vocabulary Trainer</h2>
+            <div id="wordBox" class="bg-white p-5 rounded shadow"></div>
+            <div class="flex gap-2">
+                <button onclick="nextWord()" class="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition">Next Word</button>
             </div>
         </div>
 
-        <!-- ================= SRS VOCABULARY TRAINER ================= -->
-        <div id="tab-vocab" class="hidden space-y-6 pop-in">
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h2 class="text-xl font-black">📚 Spaced Repetition (Anki SM-2 Algorithm)</h2>
-                        <p class="text-xs text-slate-500">Database across official IELTS topics.</p>
-                    </div>
-                    <div class="text-xs font-bold text-indigo-600 dark:text-indigo-400">Card Progress: <span id="srsIndexNum">1</span> / <span id="srsTotalNum">1000+</span></div>
-                </div>
-
-                <div class="p-8 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-4 max-w-2xl mx-auto">
-                    <div class="flex justify-between items-center">
-                        <span id="cardTopic" class="px-3 py-1 bg-indigo-50 dark:bg-indigo-950 text-indigo-600 text-xs font-bold rounded-full">Environment</span>
-                        <span id="cardBand" class="text-xs font-bold text-emerald-600">Band 8</span>
-                    </div>
-                    <h3 id="cardWord" class="text-4xl font-black text-indigo-600 dark:text-indigo-400">Mitigate</h3>
-                    <p id="cardDefinition" class="text-sm font-semibold text-slate-700 dark:text-slate-300">To make something less severe or harmful.</p>
-                    <div class="p-3 bg-white dark:bg-slate-800 rounded-xl text-xs italic text-slate-500" id="cardExample">
-                        "Governments must enforce regulations to mitigate the impact of climate change."
-                    </div>
-                    <div class="text-xs text-slate-400 font-semibold space-y-1">
-                        <div id="cardCollocation">Collocations: mitigate risk, mitigate impact</div>
-                        <div id="cardSynonym" class="text-indigo-500">Synonyms: Alleviate, Ease</div>
-                        <div id="cardAntonym" class="text-purple-500">Antonyms: Exacerbate, Worsen</div>
-                        <div id="cardMistakes" class="text-red-500">❌ mitigate of -> ✅ mitigate the impact of</div>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-3 pt-4">
-                        <button onclick="handleSM2Review(2)" class="py-3 bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-bold text-xs rounded-xl hover:bg-red-500/20">Hard (Interval 1d)</button>
-                        <button onclick="handleSM2Review(4)" class="py-3 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-bold text-xs rounded-xl hover:bg-amber-500/20">Normal (SM-2 Interval)</button>
-                        <button onclick="handleSM2Review(5)" class="py-3 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold text-xs rounded-xl hover:bg-emerald-500/20">Easy (Expanded Interval)</button>
-                    </div>
-                </div>
+        <!-- Analytics Tab -->
+        <div id="analytics" class="hidden bg-white p-5 rounded shadow">
+            <div style="height:400px; position: relative;">
+                <canvas id="chart"></canvas>
             </div>
         </div>
-
-        <!-- ================= SPEAKING AI PIPELINE ================= -->
-        <div id="tab-speaking" class="hidden space-y-6 pop-in">
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-6 text-center max-w-2xl mx-auto">
-                <span class="px-3 py-1 bg-red-50 dark:bg-red-950 text-red-600 text-xs font-bold rounded-full">Audio -> Whisper -> GPT Examiner Pipeline</span>
-                <h3 class="text-xl font-bold">Describe a time when technology helped you solve a problem.</h3>
-                <p class="text-xs text-slate-500">Record your response. Audio is uploaded to Whisper for transcription, then evaluated by the IELTS Examiner GPT prompt.</p>
-
-                <div class="p-6 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
-                    <div class="flex justify-center gap-3">
-                        <button onclick="startAudioRecord()" id="recAudioBtn" class="px-6 py-3 bg-red-600 text-white font-bold text-xs rounded-xl shadow">🎙️ Start Recording</button>
-                        <button onclick="stopAndUploadAudio()" class="px-6 py-3 bg-slate-200 dark:bg-slate-700 font-bold text-xs rounded-xl">⏹️ Stop & Upload to Server</button>
-                    </div>
-                    <div id="audioStatusDisplay" class="p-4 bg-white dark:bg-slate-800 rounded-xl text-xs italic text-slate-600 dark:text-slate-300 min-h-[60px]">
-                        Microphone status idle...
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= PROGRESS ANALYTICS ================= -->
-        <div id="tab-analytics" class="hidden space-y-6 pop-in">
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-6">
-                <div>
-                    <h2 class="text-xl font-black">📊 Band Score Progress Analytics</h2>
-                    <p class="text-xs text-slate-500">Fetched securely from Supabase `learning_records` table.</p>
-                </div>
-                <div class="h-80 w-full"><canvas id="analyticsChart"></canvas></div>
-            </div>
-        </div>
-
-        <!-- ================= 30-DAY AI PLANNER ================= -->
-        <div id="tab-planner" class="hidden space-y-6 pop-in">
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 space-y-4">
-                <h2 class="text-xl font-black">📅 Personalised AI Study Planner</h2>
-                <button onclick="fetchAIStudyPlan()" class="px-5 py-2.5 bg-indigo-600 text-white font-bold text-xs rounded-xl shadow">Generate Custom Plan</button>
-                <div id="plannerGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2"></div>
-            </div>
-        </div>
-
-    </main>
+    </div>
 
     <script>
-        // ================= DEFENSIVE SUPABASE INITIALIZATION =================
-        let supabase = null;
-        try {
-            if (typeof window !== 'undefined' && window.supabase && typeof window.supabase.createClient === 'function') {
-                supabase = window.supabase.createClient(
-                    'https://wahwcuslsbncjcrvjfhq.supabase.co',
-                    'sb_publishable_Rr_as-Mh6ihYvA5ZGjR8Nw_GQx6ghla'
-                );
-                console.log("Supabase initialized successfully:", supabase);
-            } else {
-                console.warn("Supabase CDN not fully loaded or unconfigured; running in offline simulation mode.");
-            }
-        } catch (e) {
-            console.warn("Supabase initialization bypassed safely:", e);
-        }
+        console.log("APP LOADED");
 
-        async function signInWithGoogle() {
-            if (!supabase || typeof supabase.auth?.signInWithOAuth !== 'function') {
-                alert("Supabase client is operating in simulation mode. Google Login simulated successfully!");
-                const authBtn = document.getElementById('authBtn');
-                if (authBtn) authBtn.innerText = "✅ Logged In";
-                return;
-            }
-            try {
-                const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
-                if (error) throw error;
-            } catch (err) {
-                alert("OAuth Error: " + err.message);
-            }
-        }
-
-        function switchTab(tabId) {
-            ['dashboard', 'vocab', 'speaking', 'analytics', 'planner'].forEach(t => {
-                const tabEl = document.getElementById(`tab-${t}`);
-                if (tabEl) tabEl.classList.add('hidden');
-                const btn = document.getElementById(`nav-${t}`);
-                if (btn) btn.className = "px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300";
-            });
-            const targetTab = document.getElementById(`tab-${tabId}`);
-            if (targetTab) targetTab.classList.remove('hidden');
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            if (activeBtn) activeBtn.className = "px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-indigo-600 shadow-sm";
-            if (tabId === 'analytics') renderAnalyticsChart();
-        }
-
-        // ================= ROBUST API SIMULATOR =================
-        async function callBackendAPI(endpoint, payload) {
-            try {
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) throw new Error("Backend server not running");
-                return await response.json();
-            } catch (err) {
-                await new Promise(r => setTimeout(r, 400));
-                if (endpoint === '/api/review-essay') {
-                    return {
-                        overallBand: 7.5,
-                        taskResponse: 7.5,
-                        coherence: 7.0,
-                        vocabulary: 8.0,
-                        grammar: 7.0,
-                        mistakes: [
-                            "Article omission before plural nouns ('global economy')",
-                            "Collocation refinement: Use 'mitigate the impact' instead of 'mitigate of'"
-                        ]
-                    };
-                } else if (endpoint === '/api/speaking-feedback') {
-                    return { overall: 8.0, fluency: 8.0, grammar: 7.5, vocabulary: 8.0, pronunciation: 8.5 };
-                } else if (endpoint === '/api/generate-plan') {
-                    return { success: true };
-                }
-            }
-        }
-
-        async function submitEssayReview() {
-            const essayInput = document.getElementById('essayInput');
-            if (!essayInput) return;
-            const essay = essayInput.value.trim();
-            if (!essay) { alert("Please enter an essay."); return; }
-
-            const result = await callBackendAPI('/api/review-essay', { essay });
-            renderEssayResponse(result);
-        }
-
-        function renderEssayResponse(res) {
-            const box = document.getElementById('essayResponseBox');
-            if (box) box.classList.remove('hidden');
-            
-            const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
-            setVal('apiBand', res.overallBand);
-            setVal('apiTR', res.taskResponse);
-            setVal('apiCC', res.coherence);
-            setVal('apiLR', res.vocabulary);
-            setVal('apiGRA', res.grammar);
-            
-            const mistakesEl = document.getElementById('apiMistakes');
-            if (mistakesEl && res.mistakes) {
-                mistakesEl.innerHTML = res.mistakes.map(m => `<li>${m}</li>`).join('');
-            }
-        }
-
-        // ================= VOCABULARY DATABASE & SM-2 SRS =================
-        const vocabDB = [
-            { id: 1, word: "Mitigate", band: 8, topic: "Environment", definition: "To make something less severe or harmful.", example: "Regulations mitigate the impact of industrial pollution.", collocations: "mitigate risk, mitigate impact", synonyms: "Alleviate, Ease", antonyms: "Exacerbate", commonMistakes: "❌ mitigate of -> ✅ mitigate the impact of" },
-            { id: 2, word: "Ubiquitous", band: 8.5, topic: "Technology", definition: "Found everywhere; widespread.", example: "Smartphones have become ubiquitous in modern society.", collocations: "ubiquitous presence, become ubiquitous", synonyms: "Omnipresent", antonyms: "Rare", commonMistakes: "❌ more ubiquitous -> ✅ ubiquitous" },
-            { id: 3, word: "Pragmatic", band: 8, topic: "Government", definition: "Dealing with things sensibly and realistically.", example: "A pragmatic approach to urban congestion is required.", collocations: "pragmatic solution", synonyms: "Realistic", antonyms: "Impractical", commonMistakes: "❌ pragmatically view -> ✅ pragmatic view" }
+        const words = [
+            { word: 'Mitigate', definition: 'Reduce harm or severity' },
+            { word: 'Ubiquitous', definition: 'Found everywhere; omnipresent' },
+            { word: 'Pragmatic', definition: 'Practical and realistic approach' }
         ];
+        let wordIndex = 0;
 
-        let srsIndex = 0;
-        let sm2State = { repetitions: 0, interval: 1, easeFactor: 2.5 };
+        function switchTab(tab) {
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('vocab').classList.add('hidden');
+            document.getElementById('analytics').classList.add('hidden');
+            
+            const target = document.getElementById(tab);
+            if (target) target.classList.remove('hidden');
 
-        function loadSRSWord() {
-            if (!vocabDB.length) return;
-            const v = vocabDB[srsIndex % vocabDB.length];
-            const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
-            setVal('cardTopic', v.topic);
-            setVal('cardBand', `Band ${v.band}`);
-            setVal('cardWord', v.word);
-            setVal('cardDefinition', v.definition);
-            setVal('cardExample', `"${v.example}"`);
-            setVal('cardCollocation', `Collocations: ${v.collocations}`);
-            setVal('cardSynonym', `Synonyms: ${v.synonyms}`);
-            setVal('cardAntonym', `Antonyms: ${v.antonyms}`);
-            setVal('cardMistakes', `Common Mistakes: ${v.commonMistakes}`);
-            setVal('srsIndexNum', (srsIndex % vocabDB.length) + 1);
-        }
-
-        function handleSM2Review(grade) {
-            let { repetitions, interval, easeFactor } = sm2State;
-            if (grade >= 3) {
-                if (repetitions === 0) interval = 1;
-                else if (repetitions === 1) interval = 6;
-                else interval = Math.round(interval * easeFactor);
-                repetitions++;
-            } else {
-                repetitions = 0;
-                interval = 1;
-            }
-            easeFactor = easeFactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
-            if (easeFactor < 1.3) easeFactor = 1.3;
-            sm2State = { repetitions, interval, easeFactor };
-
-            alert(`SM-2 Updated: Next review in ${interval} day(s). Ease Factor: ${easeFactor.toFixed(2)}`);
-            srsIndex++;
-            loadSRSWord();
-        }
-
-        // ================= AUDIO PIPELINE =================
-        let mediaRecorder = null;
-        let audioChunks = [];
-        async function startAudioRecord() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.start();
-                const statusEl = document.getElementById('audioStatusDisplay');
-                if (statusEl) statusEl.innerText = "Recording active... Speak now.";
-            } catch (err) {
-                alert("Microphone permission denied or unsupported in this browser.");
+            if (tab === 'analytics') {
+                loadChart();
             }
         }
 
-        async function stopAndUploadAudio() {
-            const statusEl = document.getElementById('audioStatusDisplay');
-            if (!mediaRecorder) {
-                if (statusEl) statusEl.innerText = "Simulating Whisper Transcription & GPT Examiner Feedback...";
-                const feedback = await callBackendAPI('/api/speaking-feedback', {});
-                if (statusEl) {
-                    statusEl.innerHTML = `
-                        <strong>Evaluation Complete (Simulated):</strong><br>
-                        Overall: ${feedback.overall} | Fluency: ${feedback.fluency} | Grammar: ${feedback.grammar} | Vocabulary: ${feedback.vocabulary} | Pronunciation: ${feedback.pronunciation}
-                    `;
-                }
-                return;
-            }
+        function submitEssayReview() {
+            const essayInput = document.getElementById('essayInput');
+            const output = document.getElementById('essayOutput');
+            if (!essayInput || !output) return;
 
-            mediaRecorder.stop();
-            if (statusEl) statusEl.innerText = "Uploading audio blob -> Whisper -> GPT Examiner...";
-
-            mediaRecorder.onstop = async () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                let feedback = await callBackendAPI('/api/speaking-feedback', { audioBlob });
-
-                if (statusEl) {
-                    statusEl.innerHTML = `
-                        <strong>Evaluation Complete:</strong><br>
-                        Overall: ${feedback.overall} | Fluency: ${feedback.fluency} | Grammar: ${feedback.grammar} | Vocabulary: ${feedback.vocabulary} | Pronunciation: ${feedback.pronunciation}
-                    `;
-                }
-            };
+            output.classList.remove('hidden');
+            output.innerHTML = `
+                <b>Overall Band:</b> 7.5<br>
+                <b>Vocabulary:</b> 8.0<br>
+                <b>Grammar:</b> 7.0
+            `;
         }
 
-        // ================= PROGRESS ANALYTICS CHART =================
+        function loadWord() {
+            const wordBox = document.getElementById('wordBox');
+            if (!wordBox || !words.length) return;
+            const w = words[wordIndex];
+            wordBox.innerHTML = `
+                <h3 class="text-2xl font-bold text-indigo-600">${w.word}</h3>
+                <p class="mt-2 text-slate-700">${w.definition}</p>
+            `;
+        }
+
+        function nextWord() {
+            wordIndex++;
+            if (wordIndex >= words.length) {
+                wordIndex = 0;
+            }
+            loadWord();
+        }
+
+        let chartLoaded = false;
         let chartInstance = null;
-        function renderAnalyticsChart() {
-            const canvas = document.getElementById('analyticsChart');
-            if (!canvas) return;
-            if (typeof Chart === 'undefined') {
-                console.warn("Chart.js failed to load.");
+        function loadChart() {
+            const canvas = document.getElementById('chart');
+            if (!canvas || typeof Chart === 'undefined') return;
+
+            if (chartLoaded && chartInstance) {
+                chartInstance.update();
                 return;
             }
-            const ctx = canvas.getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-            
-            const writingBand = 7.0;
-            const speakingBand = 7.5;
-            const readingBand = 7.0;
-            const listeningBand = 7.5;
-            const predictedBand = (writingBand + speakingBand + readingBand + listeningBand) / 4;
-            
-            const overallEl = document.getElementById('overallPredictedBand');
-            if (overallEl) overallEl.innerText = predictedBand.toFixed(2);
+            chartLoaded = true;
 
-            chartInstance = new Chart(ctx, {
+            chartInstance = new Chart(canvas, {
                 type: 'line',
                 data: {
                     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
                     datasets: [{
-                        label: 'Overall Predicted Band',
-                        data: [6.0, 6.5, 7.0, predictedBand],
-                        borderColor: '#16a34a',
-                        backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                        label: 'Band Score Progression',
+                        data: [6, 6.5, 7, 7.5],
+                        borderColor: 'green',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
                         fill: true,
                         tension: 0.3
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
             });
         }
 
-        // ================= AI STUDY PLANNER =================
-        async function fetchAIStudyPlan() {
-            await callBackendAPI('/api/generate-plan', { targetBand: 8.0, currentBand: 6.0 });
-            const grid = document.getElementById('plannerGrid');
-            if (grid) {
-                grid.innerHTML = `
-                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-1"><span class="text-xs font-bold text-indigo-600">Week 1</span><h4 class="font-bold text-xs">Vocabulary & Task 1</h4></div>
-                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-1"><span class="text-xs font-bold text-indigo-600">Week 2</span><h4 class="font-bold text-xs">Writing Task 2 Deep Dive</h4></div>
-                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-1"><span class="text-xs font-bold text-indigo-600">Week 3</span><h4 class="font-bold text-xs">Speaking Part 2 & Audio Feedback</h4></div>
-                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-1"><span class="text-xs font-bold text-indigo-600">Week 4</span><h4 class="font-bold text-xs">Full Mock Simulation</h4></div>
-                `;
-            }
-        }
-
-        // ================= EXPLICIT GLOBAL BINDINGS =================
+        // Explicit Global Bindings for DevTools / onclick attributes
         window.switchTab = switchTab;
-        window.signInWithGoogle = signInWithGoogle;
         window.submitEssayReview = submitEssayReview;
-        window.handleSM2Review = handleSM2Review;
-        window.startAudioRecord = startAudioRecord;
-        window.stopAndUploadAudio = stopAndUploadAudio;
-        window.fetchAIStudyPlan = fetchAIStudyPlan;
+        window.nextWord = nextWord;
 
-        // ================= DOM READY INITIALIZATION =================
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSRSWord();
-            fetchAIStudyPlan();
-        });
+        window.onload = function() {
+            console.log("WINDOW LOADED");
+            loadWord();
+        };
     </script>
 </body>
 </html>
