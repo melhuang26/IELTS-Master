@@ -175,7 +175,7 @@
         let supabase = null;
         try {
             if (window.supabase) {
-                supabase = window.supabase.createClient('https://your-project.supabase.co', 'public-anon-key');
+                supabase = window.supabase.createClient('sb_publishable_Rr_as-Mh6ihYvA5ZGjR8Nw_GQx6ghla', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhaHdjdXNsc2JuY2pjcnZqZmhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3OTE4ODEsImV4cCI6MjEwODM2Nzg4MX0.yj7ONwH5TylnrM3eXUVlqrkCdkK52pyoW2CRPXPdVKA');
             }
         } catch (e) {
             console.warn("Supabase initialization skipped or unconfigured.");
